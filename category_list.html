@@ -1,0 +1,673 @@
+<html lang="fa" dir="rtl"><head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>داشبورد مدیریت</title>
+    <link href="https://cdn.fontcdn.ir/Font/Persian/Vazir/Vazir.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.2/css/bootstrap.rtl.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.13.2/jquery-ui.min.js"></script>
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Vazir',sans-serif;
+        }
+
+        body {
+            background: #f5f5f5;
+            font-family: "IRANSans", sans-serif;
+        }
+
+        .wrapper {
+            display: flex;
+            min-height: 100vh;
+        }
+
+        .sidebar {
+            width: 220px;
+            background: #263238;
+            color: white;
+            display: flex;
+            flex-direction: column;
+        }
+
+            .sidebar h5 {
+                padding: 1rem;
+                font-weight: bold;
+                border-bottom: 1px solid rgba(255,255,255,0.1);
+            }
+
+            .sidebar a {
+                color: white;
+                padding: 0.75rem 1rem;
+                display: block;
+                text-decoration: none;
+            }
+
+                .sidebar a:hover {
+                    background: rgba(255,255,255,0.1);
+                }
+
+        .content {
+            flex: 1;
+            padding: 1rem;
+        }
+
+        .stat-card {
+            color: white;
+            padding: 1rem;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+
+            .stat-card i {
+                font-size: 2.5rem;
+                opacity: 0.7;
+            }
+
+        .table-container {
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+            padding: 1rem;
+            margin-top: 1rem;
+            overflow-x: auto;
+        }
+
+        .table thead {
+            background: #eeeeee;
+            position: sticky;
+            top: 0;
+        }
+
+        .table-hover tbody tr:hover {
+            background: #f1f8ff;
+        }
+
+        .btn-details {
+            background: #e3f2fd;
+            border: 1px solid #90caf9;
+            color: #1565c0;
+            font-weight: bold;
+            padding: 2px 10px;
+            border-radius: 6px;
+        }
+
+        .info-box {
+            background: white;
+            border-radius: 10px;
+            padding: 1rem;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+            height: 100%;
+        }
+
+        header {
+            background-color: #fff;
+            padding: 1rem;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+            margin-bottom: 1rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .page-title {
+            font-size: 1.2rem;
+            font-weight: bold;
+        }
+
+        .card {
+            border-radius: 10px;
+            border: none;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+            background-color: #fff;
+        }
+
+        dl.row dt,
+        dl.row dd {
+            margin-bottom: 10px; /* فاصله بین هر سطر */
+        }
+
+            dl.row dd img {
+                display: block;
+                margin-top: 5px; /* فاصله بین متن و تصویر */
+            }
+
+        /* کانتینر Toast: همه Toast ها در اینجا قرار می‌گیرند */
+        #toast-container {
+            position: fixed; /* همیشه روی صفحه نمایش داده می‌شود */
+            top: 1rem;
+            right: 1rem;
+            z-index: 1055;
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem; /* فاصله بین Toast ها */
+        }
+
+        /* استایل پایه Toast */
+        .toast-custom {
+            min-width: 250px;
+            max-width: 350px;
+            padding: 0.75rem 1rem;
+            border-radius: 0.375rem;
+            color: #fff;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 0.25rem 0.5rem rgba(0,0,0,0.2);
+            animation: fadein 0.5s, fadeout 0.5s 3.5s; /* انیمیشن ظاهر و محو شدن */
+            font-family: Arial, sans-serif;
+            font-size: 0.9rem;
+        }
+
+        /* رنگ‌های مختلف برای نوع پیام */
+        .toast-success {
+            background-color: #28a745;
+        }
+        /* سبز: موفقیت */
+        .toast-error {
+            background-color: #dc3545;
+        }
+        /* قرمز: خطا */
+        .toast-warning {
+            background-color: #ffc107;
+            color: #000;
+        }
+        /* زرد: هشدار */
+
+        /* دکمه بستن */
+        .toast-custom button {
+            background: transparent;
+            border: none;
+            color: inherit;
+            font-size: 1rem;
+            cursor: pointer;
+        }
+
+        /* انیمیشن‌های Fade In و Fade Out */
+        @keyframes fadein {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes fadeout {
+            from {
+                opacity: 1;
+            }
+
+            to {
+                opacity: 0;
+            }
+        }
+    </style>
+
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/persian-datepicker@1.2.0/dist/css/persian-datepicker.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/persian-date/dist/persian-date.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/persian-datepicker@1.2.0/dist/js/persian-datepicker.min.js"></script>
+
+    <link href="https://cdn.jsdelivr.net/gh/rastikerdar/vazir-font@v30.1.0/dist/font-face.css" rel="stylesheet" type="text/css">
+    <style>
+        body {
+            font-family: 'Vazir', sans-serif;
+        }
+    </style>
+
+       <!-- ✅ اینجا -->
+</head>
+<body>
+    <div class="wrapper">
+        <!-- Sidebar -->
+        <div class="sidebar">
+    <h5>مدیریت سایت</h5>
+    <a href="/AdminPanel/Dashboard/Index"><i class="fa fa-home"></i> صفحه اصلی</a>
+    <a href="/AdminPanel/News/List"><i class="fa fa-bullhorn"></i> اخبار</a>
+    <a href="/AdminPanel/Announcement/List"><i class="fa fa-bullhorn"></i> اطلاعیه‌ها</a>
+    <a href="/AdminPanel/Brand/List"><i class="fa fa-bullhorn"></i> برند</a>
+    <a href="/AdminPanel/Product/Groups"><i class="fa fa-box"></i> انبار کالا</a>
+    <a href="/AdminPanel/Agent/List"><i class="fa fa-users"></i> نمایندگی‌ها</a>
+    <a href="/AdminPanel/FrancoShopReports/SalesReport"><i class="fa fa-shopping-cart"></i> گزارش سفارشات</a>
+    <a href="/AdminPanel/Account/UserList"><i class="fa fa-shopping-cart"></i> کاربران سیستم</a>
+    <hr style="border-color: rgba(255,255,255,0.1);">
+    <a href="/Home/Index"><i class="fa fa-sign-in-alt"></i> ورود به سامانه اصلی</a>
+</div>
+
+
+        <!-- Main Content -->
+        
+
+<main class="col-md-10 ms-sm-auto content">
+    
+<header class="d-flex justify-content-between align-items-center mb-3">
+    <h5>مدیریت محصولات &gt; گروه محصولات</h5>
+<form action="/AdminPanel/Account/Logout" area="" method="post">            <button type="submit" class="btn btn-danger">
+                <i class="fa fa-sign-out-alt"></i> خروج
+            </button>
+<input name="__RequestVerificationToken" type="hidden" value="CfDJ8EcDHDswgKFCptCcOww8Oj1_NCktqUhvbiOePYS0rP9RICDpthlgfLJ9UX2E2MG7oE1jJiuTbEB_TFTZ3MWYWIg8vz9OknZ3CGa6FMX3dRgv_sLbVsn9_qMpujwtK4aTrXx07rIMkO8nqRkf6Y4U6-aFmkzcVOWPlRx2GU5G0OK9iKMIYsBzdi95FVOWNUFqtA"></form></header>
+
+
+    <div class="card p-4 p-3">
+        <div class="d-flex flex-wrap gap-2 mb-3">
+            <a href="/AdminPanel/Product/RegisterGroup" class="btn btn-primary"><i class="fa fa-plus"></i> ایجاد جدید</a>
+            <button class="btn btn-secondary"><i class="fa fa-sync"></i> بارگذاری مجدد لیست</button>
+            <button id="saveOrderBtn" class="btn btn-success btn-sm"><i class="fa fa-save"></i> ذخیره ترتیب</button>
+            <button id="downloadExcelRefrenceFile" class="btn btn-warning btn-sm"><i class="fa fa-excel"></i> دانلود فایل اکسل مرجع </button>
+        </div>
+
+        <div class="table-responsive">
+            
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Sortable/1.15.2/Sortable.min.js"></script>
+
+
+<!-- Modal (hidden inputs no initial value) -->
+<div class="modal fade" id="uploadExcelModal" tabindex="-1" aria-labelledby="uploadExcelModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="uploadExcelModalLabel">
+                    <i class="fa fa-file-excel"></i> آپلود محصولات با اکسل
+                </h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="بستن"></button>
+            </div>
+            <div class="modal-body">
+                <form id="excelUploadForm" enctype="multipart/form-data">
+                    <input type="hidden" name="categoryId">
+                    <input type="hidden" name="brandId">
+
+                    <div class="mb-3">
+                        <label for="excelFile" class="form-label">انتخاب فایل اکسل</label>
+                        <input type="file" class="form-control" id="excelFile" name="file" accept=".xlsx,.xls" required="">
+                    </div>
+
+                    <div class="d-flex justify-content-end">
+                        <button type="submit" class="btn btn-warning btn-sm">
+                            <i class="fa fa-upload"></i> ارسال فایل
+                        </button>
+                        <button type="button" class="btn btn-secondary ms-2" data-bs-dismiss="modal">بستن</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- داخل foreach ردیف‌ها: دکمهٔ آپلود با data-category -->
+
+
+
+
+<table id="crudTable" class="table table-bordered table-striped">
+    <thead class="table-header" style="background:#5986b3 !important">
+        <tr>
+
+                    <th style="width:8%">ترتیب نمایش</th>
+                    <th style="text-align:center; vertical-align:middle">نمایش</th>
+                    <th style="text-align:center; vertical-align:middle">عنوان</th>
+            <th style="text-align:center; vertical-align:middle">عملیات</th>
+        </tr>
+    </thead>
+    <tbody>
+            <tr data-id="67770a65-97fe-4387-a8af-8574ebf35dd4">
+                    <td><i class="fa fa-bars drag-handle"></i> &nbsp;&nbsp; 1</td>
+                        <td class="text-center">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="green" viewBox="0 0 16 16">
+                                        <path d="M13.485 1.929a1 1 0 0 1 .086 1.414l-7.071 8a1 1 0 0 1-1.497 0l-3.536-4a1 1 0 1 1 1.497-1.328L6 8.586l6.536-7.414a1 1 0 0 1 .949-.243z"></path>
+                                    </svg>
+                        </td>
+                        <td class="text-center">
+گروه تست                        </td>
+
+                <td class="text-center">
+                    <a class="btn btn-sm btn-primary" href="/AdminPanel/Product/Edit/67770a65-97fe-4387-a8af-8574ebf35dd4">
+                        <i class="fa fa-edit"></i>
+                    </a>
+
+                    <a class="btn btn-sm btn-danger" href="/AdminPanel/Product/Delete/67770a65-97fe-4387-a8af-8574ebf35dd4" onclick="return confirm('آیا از حذف این رکورد مطمئن هستید؟');">
+                        <i class="fa fa-trash"></i>
+                    </a>
+
+                        <a class="btn btn-sm btn-success" href="/AdminPanel/SubProduct/List/67770a65-97fe-4387-a8af-8574ebf35dd4">
+                            محصولات گروه
+                        </a>
+                        <button class="btn btn-warning btn-sm upload-excel-btn" data-bs-toggle="modal" data-bs-target="#uploadExcelModal" data-category="67770a65-97fe-4387-a8af-8574ebf35dd4">
+                            <i class="fa fa-file-excel"></i> آپلود اکسل
+                        </button>
+
+                </td>
+            </tr>
+            <tr data-id="1fae5386-6b76-4c13-a0c7-f72dbcda17de">
+                    <td><i class="fa fa-bars drag-handle"></i> &nbsp;&nbsp; 2</td>
+                        <td class="text-center">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="green" viewBox="0 0 16 16">
+                                        <path d="M13.485 1.929a1 1 0 0 1 .086 1.414l-7.071 8a1 1 0 0 1-1.497 0l-3.536-4a1 1 0 1 1 1.497-1.328L6 8.586l6.536-7.414a1 1 0 0 1 .949-.243z"></path>
+                                    </svg>
+                        </td>
+                        <td class="text-center">
+سنسور اکسیژن -  استپر  1404/07/14                        </td>
+
+                <td class="text-center">
+                    <a class="btn btn-sm btn-primary" href="/AdminPanel/Product/Edit/1fae5386-6b76-4c13-a0c7-f72dbcda17de">
+                        <i class="fa fa-edit"></i>
+                    </a>
+
+                    <a class="btn btn-sm btn-danger" href="/AdminPanel/Product/Delete/1fae5386-6b76-4c13-a0c7-f72dbcda17de" onclick="return confirm('آیا از حذف این رکورد مطمئن هستید؟');">
+                        <i class="fa fa-trash"></i>
+                    </a>
+
+                        <a class="btn btn-sm btn-success" href="/AdminPanel/SubProduct/List/1fae5386-6b76-4c13-a0c7-f72dbcda17de">
+                            محصولات گروه
+                        </a>
+                        <button class="btn btn-warning btn-sm upload-excel-btn" data-bs-toggle="modal" data-bs-target="#uploadExcelModal" data-category="1fae5386-6b76-4c13-a0c7-f72dbcda17de">
+                            <i class="fa fa-file-excel"></i> آپلود اکسل
+                        </button>
+
+                </td>
+            </tr>
+            <tr data-id="2220ed7f-60c5-4bc9-b758-4cdb7e4dacb5">
+                    <td><i class="fa fa-bars drag-handle"></i> &nbsp;&nbsp; 3</td>
+                        <td class="text-center">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="green" viewBox="0 0 16 16">
+                                        <path d="M13.485 1.929a1 1 0 0 1 .086 1.414l-7.071 8a1 1 0 0 1-1.497 0l-3.536-4a1 1 0 1 1 1.497-1.328L6 8.586l6.536-7.414a1 1 0 0 1 .949-.243z"></path>
+                                    </svg>
+                        </td>
+                        <td class="text-center">
+اشانتیون                        </td>
+
+                <td class="text-center">
+                    <a class="btn btn-sm btn-primary" href="/AdminPanel/Product/Edit/2220ed7f-60c5-4bc9-b758-4cdb7e4dacb5">
+                        <i class="fa fa-edit"></i>
+                    </a>
+
+                    <a class="btn btn-sm btn-danger" href="/AdminPanel/Product/Delete/2220ed7f-60c5-4bc9-b758-4cdb7e4dacb5" onclick="return confirm('آیا از حذف این رکورد مطمئن هستید؟');">
+                        <i class="fa fa-trash"></i>
+                    </a>
+
+                        <a class="btn btn-sm btn-success" href="/AdminPanel/SubProduct/List/2220ed7f-60c5-4bc9-b758-4cdb7e4dacb5">
+                            محصولات گروه
+                        </a>
+                        <button class="btn btn-warning btn-sm upload-excel-btn" data-bs-toggle="modal" data-bs-target="#uploadExcelModal" data-category="2220ed7f-60c5-4bc9-b758-4cdb7e4dacb5">
+                            <i class="fa fa-file-excel"></i> آپلود اکسل
+                        </button>
+
+                </td>
+            </tr>
+            <tr data-id="c4e42830-33fd-4985-a1e5-2dcafc428cb8">
+                    <td><i class="fa fa-bars drag-handle"></i> &nbsp;&nbsp; 4</td>
+                        <td class="text-center">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="green" viewBox="0 0 16 16">
+                                        <path d="M13.485 1.929a1 1 0 0 1 .086 1.414l-7.071 8a1 1 0 0 1-1.497 0l-3.536-4a1 1 0 1 1 1.497-1.328L6 8.586l6.536-7.414a1 1 0 0 1 .949-.243z"></path>
+                                    </svg>
+                        </td>
+                        <td class="text-center">
+بلبرینگ جات _  تسمه سفت کن و غلتک هرزگرد - 1404/07/17                        </td>
+
+                <td class="text-center">
+                    <a class="btn btn-sm btn-primary" href="/AdminPanel/Product/Edit/c4e42830-33fd-4985-a1e5-2dcafc428cb8">
+                        <i class="fa fa-edit"></i>
+                    </a>
+
+                    <a class="btn btn-sm btn-danger" href="/AdminPanel/Product/Delete/c4e42830-33fd-4985-a1e5-2dcafc428cb8" onclick="return confirm('آیا از حذف این رکورد مطمئن هستید؟');">
+                        <i class="fa fa-trash"></i>
+                    </a>
+
+                        <a class="btn btn-sm btn-success" href="/AdminPanel/SubProduct/List/c4e42830-33fd-4985-a1e5-2dcafc428cb8">
+                            محصولات گروه
+                        </a>
+                        <button class="btn btn-warning btn-sm upload-excel-btn" data-bs-toggle="modal" data-bs-target="#uploadExcelModal" data-category="c4e42830-33fd-4985-a1e5-2dcafc428cb8">
+                            <i class="fa fa-file-excel"></i> آپلود اکسل
+                        </button>
+
+                </td>
+            </tr>
+            <tr data-id="b1cc1288-9b68-477b-90f1-9a842f268f42">
+                    <td><i class="fa fa-bars drag-handle"></i> &nbsp;&nbsp; 5</td>
+                        <td class="text-center">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="green" viewBox="0 0 16 16">
+                                        <path d="M13.485 1.929a1 1 0 0 1 .086 1.414l-7.071 8a1 1 0 0 1-1.497 0l-3.536-4a1 1 0 1 1 1.497-1.328L6 8.586l6.536-7.414a1 1 0 0 1 .949-.243z"></path>
+                                    </svg>
+                        </td>
+                        <td class="text-center">
+پمپ هیدرولیک _  اویل پمپ  -  واتر پمپ -   1404/06/25                        </td>
+
+                <td class="text-center">
+                    <a class="btn btn-sm btn-primary" href="/AdminPanel/Product/Edit/b1cc1288-9b68-477b-90f1-9a842f268f42">
+                        <i class="fa fa-edit"></i>
+                    </a>
+
+                    <a class="btn btn-sm btn-danger" href="/AdminPanel/Product/Delete/b1cc1288-9b68-477b-90f1-9a842f268f42" onclick="return confirm('آیا از حذف این رکورد مطمئن هستید؟');">
+                        <i class="fa fa-trash"></i>
+                    </a>
+
+                        <a class="btn btn-sm btn-success" href="/AdminPanel/SubProduct/List/b1cc1288-9b68-477b-90f1-9a842f268f42">
+                            محصولات گروه
+                        </a>
+                        <button class="btn btn-warning btn-sm upload-excel-btn" data-bs-toggle="modal" data-bs-target="#uploadExcelModal" data-category="b1cc1288-9b68-477b-90f1-9a842f268f42">
+                            <i class="fa fa-file-excel"></i> آپلود اکسل
+                        </button>
+
+                </td>
+            </tr>
+            <tr data-id="26fce3e0-915d-4f23-b4a4-ab50c2943647">
+                    <td><i class="fa fa-bars drag-handle"></i> &nbsp;&nbsp; 6</td>
+                        <td class="text-center">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="green" viewBox="0 0 16 16">
+                                        <path d="M13.485 1.929a1 1 0 0 1 .086 1.414l-7.071 8a1 1 0 0 1-1.497 0l-3.536-4a1 1 0 1 1 1.497-1.328L6 8.586l6.536-7.414a1 1 0 0 1 .949-.243z"></path>
+                                    </svg>
+                        </td>
+                        <td class="text-center">
+فشنگی روغن و فشنگی دنده عقب - سنسور دمای آب - استپ ترمز 1404/07/13                        </td>
+
+                <td class="text-center">
+                    <a class="btn btn-sm btn-primary" href="/AdminPanel/Product/Edit/26fce3e0-915d-4f23-b4a4-ab50c2943647">
+                        <i class="fa fa-edit"></i>
+                    </a>
+
+                    <a class="btn btn-sm btn-danger" href="/AdminPanel/Product/Delete/26fce3e0-915d-4f23-b4a4-ab50c2943647" onclick="return confirm('آیا از حذف این رکورد مطمئن هستید؟');">
+                        <i class="fa fa-trash"></i>
+                    </a>
+
+                        <a class="btn btn-sm btn-success" href="/AdminPanel/SubProduct/List/26fce3e0-915d-4f23-b4a4-ab50c2943647">
+                            محصولات گروه
+                        </a>
+                        <button class="btn btn-warning btn-sm upload-excel-btn" data-bs-toggle="modal" data-bs-target="#uploadExcelModal" data-category="26fce3e0-915d-4f23-b4a4-ab50c2943647">
+                            <i class="fa fa-file-excel"></i> آپلود اکسل
+                        </button>
+
+                </td>
+            </tr>
+            <tr data-id="87727d02-1482-47e4-aac7-7fb1c9e24226">
+                    <td><i class="fa fa-bars drag-handle"></i> &nbsp;&nbsp; 7</td>
+                        <td class="text-center">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="green" viewBox="0 0 16 16">
+                                        <path d="M13.485 1.929a1 1 0 0 1 .086 1.414l-7.071 8a1 1 0 0 1-1.497 0l-3.536-4a1 1 0 1 1 1.497-1.328L6 8.586l6.536-7.414a1 1 0 0 1 .949-.243z"></path>
+                                    </svg>
+                        </td>
+                        <td class="text-center">
+لنت یلکن 1404/07/13                        </td>
+
+                <td class="text-center">
+                    <a class="btn btn-sm btn-primary" href="/AdminPanel/Product/Edit/87727d02-1482-47e4-aac7-7fb1c9e24226">
+                        <i class="fa fa-edit"></i>
+                    </a>
+
+                    <a class="btn btn-sm btn-danger" href="/AdminPanel/Product/Delete/87727d02-1482-47e4-aac7-7fb1c9e24226" onclick="return confirm('آیا از حذف این رکورد مطمئن هستید؟');">
+                        <i class="fa fa-trash"></i>
+                    </a>
+
+                        <a class="btn btn-sm btn-success" href="/AdminPanel/SubProduct/List/87727d02-1482-47e4-aac7-7fb1c9e24226">
+                            محصولات گروه
+                        </a>
+                        <button class="btn btn-warning btn-sm upload-excel-btn" data-bs-toggle="modal" data-bs-target="#uploadExcelModal" data-category="87727d02-1482-47e4-aac7-7fb1c9e24226">
+                            <i class="fa fa-file-excel"></i> آپلود اکسل
+                        </button>
+
+                </td>
+            </tr>
+            <tr data-id="feac1ad1-d156-46d5-88e4-2fdf01a6cef5">
+                    <td><i class="fa fa-bars drag-handle"></i> &nbsp;&nbsp; 8</td>
+                        <td class="text-center">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="green" viewBox="0 0 16 16">
+                                        <path d="M13.485 1.929a1 1 0 0 1 .086 1.414l-7.071 8a1 1 0 0 1-1.497 0l-3.536-4a1 1 0 1 1 1.497-1.328L6 8.586l6.536-7.414a1 1 0 0 1 .949-.243z"></path>
+                                    </svg>
+                        </td>
+                        <td class="text-center">
+لنت فرانکو 1404/07/13                        </td>
+
+                <td class="text-center">
+                    <a class="btn btn-sm btn-primary" href="/AdminPanel/Product/Edit/feac1ad1-d156-46d5-88e4-2fdf01a6cef5">
+                        <i class="fa fa-edit"></i>
+                    </a>
+
+                    <a class="btn btn-sm btn-danger" href="/AdminPanel/Product/Delete/feac1ad1-d156-46d5-88e4-2fdf01a6cef5" onclick="return confirm('آیا از حذف این رکورد مطمئن هستید؟');">
+                        <i class="fa fa-trash"></i>
+                    </a>
+
+                        <a class="btn btn-sm btn-success" href="/AdminPanel/SubProduct/List/feac1ad1-d156-46d5-88e4-2fdf01a6cef5">
+                            محصولات گروه
+                        </a>
+                        <button class="btn btn-warning btn-sm upload-excel-btn" data-bs-toggle="modal" data-bs-target="#uploadExcelModal" data-category="feac1ad1-d156-46d5-88e4-2fdf01a6cef5">
+                            <i class="fa fa-file-excel"></i> آپلود اکسل
+                        </button>
+
+                </td>
+            </tr>
+            <tr data-id="03bb27c7-1bb5-47ff-8713-a527a0b588c2">
+                    <td><i class="fa fa-bars drag-handle"></i> &nbsp;&nbsp; 9</td>
+                        <td class="text-center">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="green" viewBox="0 0 16 16">
+                                        <path d="M13.485 1.929a1 1 0 0 1 .086 1.414l-7.071 8a1 1 0 0 1-1.497 0l-3.536-4a1 1 0 1 1 1.497-1.328L6 8.586l6.536-7.414a1 1 0 0 1 .949-.243z"></path>
+                                    </svg>
+                        </td>
+                        <td class="text-center">
+سرسیلندر - پایه دسته موتور  1404/07/14                        </td>
+
+                <td class="text-center">
+                    <a class="btn btn-sm btn-primary" href="/AdminPanel/Product/Edit/03bb27c7-1bb5-47ff-8713-a527a0b588c2">
+                        <i class="fa fa-edit"></i>
+                    </a>
+
+                    <a class="btn btn-sm btn-danger" href="/AdminPanel/Product/Delete/03bb27c7-1bb5-47ff-8713-a527a0b588c2" onclick="return confirm('آیا از حذف این رکورد مطمئن هستید؟');">
+                        <i class="fa fa-trash"></i>
+                    </a>
+
+                        <a class="btn btn-sm btn-success" href="/AdminPanel/SubProduct/List/03bb27c7-1bb5-47ff-8713-a527a0b588c2">
+                            محصولات گروه
+                        </a>
+                        <button class="btn btn-warning btn-sm upload-excel-btn" data-bs-toggle="modal" data-bs-target="#uploadExcelModal" data-category="03bb27c7-1bb5-47ff-8713-a527a0b588c2">
+                            <i class="fa fa-file-excel"></i> آپلود اکسل
+                        </button>
+
+                </td>
+            </tr>
+    </tbody>
+</table>
+
+<script>
+    // گرفتن نام کنترلر از مدل Razor
+    const controllerName = "Product";
+    const areaName = "AdminPanel";
+
+    // فعال‌سازی Drag & Drop
+    let sortable = new Sortable(document.querySelector("#crudTable tbody"), {
+        handle: ".drag-handle",
+        animation: 150
+    });
+
+    // ذخیره ترتیب
+    $("#saveOrderBtn").on("click", function () {
+        let order = [];
+        $("#crudTable tbody tr").each(function (index) {
+            order.push({ id: $(this).data("id"), order: index + 1 });
+        });
+
+        // آدرس جنریک بر اساس کنترلر و area
+        let url = "/" + (areaName ? areaName + "/" : "") + controllerName + "/UpdateOrder";
+
+        $.ajax({
+            url: url,
+            type: "POST",
+            contentType: "application/json",
+            data: JSON.stringify(order),
+            success: function () {
+                let reloadUrl = "/" + (areaName ? areaName + "/" : "") + controllerName + (controllerName != "Product" ? "/List" : "/Groups") ;
+                window.location.href = reloadUrl;
+            },
+            error: function () {
+                alert("خطا در ذخیره ترتیب");
+            }
+        });
+    });
+
+    // وقتی روی دکمه upload کلیک میشه، categoryId رو در hidden ست کن
+    $(document).on("click", ".upload-excel-btn", function () {
+        // دو روش خواندن: data() یا attr() — برای اطمینان هردو را امتحان می‌کنیم
+        let categoryId = $(this).data("category");
+        if (!categoryId) categoryId = $(this).attr("data-category");
+
+        console.log("upload-excel-btn clicked, data-category:", categoryId);
+        $("#excelUploadForm input[name='categoryId']").val(categoryId || "");
+    });
+
+    // پاک‌سازی هنگام بستن modal تا مقدار قدیمی نپاید
+    $('#uploadExcelModal').on('hidden.bs.modal', function () {
+        $("#excelUploadForm input[name='categoryId']").val('');
+        $("#excelUploadForm input[name='file']").val(''); // پاک کردن فیلد فایل
+    });
+
+
+     $("#excelUploadForm").on("submit", function (e) {
+        e.preventDefault();
+
+        let formData = new FormData(this);
+
+        $.ajax({
+            url: "/AdminPanel/SubProduct/UploadProducts", // مسیر کنترلر
+            type: "POST",
+            data: formData,
+            processData: false, // جلوگیری از پردازش پیش‌فرض
+            contentType: false, // نوع محتوا رو خود مرورگر تعیین کنه
+            success: function (response) {
+                alert(response.message);
+                $("#uploadExcelModal").modal("hide");
+                let reloadUrl = "/AdminPanel/Product/Groups";
+                $("#crudTableContainer").load(reloadUrl);
+            },
+            error: function (xhr) {
+                let response = JSON.parse(xhr.responseText);
+                alert("❌ خطا: " + response.message);
+            }
+        });
+    });
+</script>
+
+        </div>
+    </div>
+</main>
+
+<script>
+    $(document).on("click", "#downloadExcelRefrenceFile", function () {
+        window.location.href = "/AdminPanel/Product/DownloadExcelRefrenceFile";
+    });
+</script>
+    </div>
+    
+
+    <!-- کانتینر Toast -->
+    <div id="toast-container"></div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.2/js/bootstrap.bundle.min.js"></script>
+
+</body></html>
