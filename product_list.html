@@ -1,0 +1,1872 @@
+<html lang="fa" dir="rtl"><head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>داشبورد مدیریت</title>
+    <link href="https://cdn.fontcdn.ir/Font/Persian/Vazir/Vazir.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.2/css/bootstrap.rtl.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.13.2/jquery-ui.min.js"></script>
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Vazir',sans-serif;
+        }
+
+        body {
+            background: #f5f5f5;
+            font-family: "IRANSans", sans-serif;
+        }
+
+        .wrapper {
+            display: flex;
+            min-height: 100vh;
+        }
+
+        .sidebar {
+            width: 220px;
+            background: #263238;
+            color: white;
+            display: flex;
+            flex-direction: column;
+        }
+
+            .sidebar h5 {
+                padding: 1rem;
+                font-weight: bold;
+                border-bottom: 1px solid rgba(255,255,255,0.1);
+            }
+
+            .sidebar a {
+                color: white;
+                padding: 0.75rem 1rem;
+                display: block;
+                text-decoration: none;
+            }
+
+                .sidebar a:hover {
+                    background: rgba(255,255,255,0.1);
+                }
+
+        .content {
+            flex: 1;
+            padding: 1rem;
+        }
+
+        .stat-card {
+            color: white;
+            padding: 1rem;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+
+            .stat-card i {
+                font-size: 2.5rem;
+                opacity: 0.7;
+            }
+
+        .table-container {
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+            padding: 1rem;
+            margin-top: 1rem;
+            overflow-x: auto;
+        }
+
+        .table thead {
+            background: #eeeeee;
+            position: sticky;
+            top: 0;
+        }
+
+        .table-hover tbody tr:hover {
+            background: #f1f8ff;
+        }
+
+        .btn-details {
+            background: #e3f2fd;
+            border: 1px solid #90caf9;
+            color: #1565c0;
+            font-weight: bold;
+            padding: 2px 10px;
+            border-radius: 6px;
+        }
+
+        .info-box {
+            background: white;
+            border-radius: 10px;
+            padding: 1rem;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+            height: 100%;
+        }
+
+        header {
+            background-color: #fff;
+            padding: 1rem;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+            margin-bottom: 1rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .page-title {
+            font-size: 1.2rem;
+            font-weight: bold;
+        }
+
+        .card {
+            border-radius: 10px;
+            border: none;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+            background-color: #fff;
+        }
+
+        dl.row dt,
+        dl.row dd {
+            margin-bottom: 10px; /* فاصله بین هر سطر */
+        }
+
+            dl.row dd img {
+                display: block;
+                margin-top: 5px; /* فاصله بین متن و تصویر */
+            }
+
+        /* کانتینر Toast: همه Toast ها در اینجا قرار می‌گیرند */
+        #toast-container {
+            position: fixed; /* همیشه روی صفحه نمایش داده می‌شود */
+            top: 1rem;
+            right: 1rem;
+            z-index: 1055;
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem; /* فاصله بین Toast ها */
+        }
+
+        /* استایل پایه Toast */
+        .toast-custom {
+            min-width: 250px;
+            max-width: 350px;
+            padding: 0.75rem 1rem;
+            border-radius: 0.375rem;
+            color: #fff;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 0.25rem 0.5rem rgba(0,0,0,0.2);
+            animation: fadein 0.5s, fadeout 0.5s 3.5s; /* انیمیشن ظاهر و محو شدن */
+            font-family: Arial, sans-serif;
+            font-size: 0.9rem;
+        }
+
+        /* رنگ‌های مختلف برای نوع پیام */
+        .toast-success {
+            background-color: #28a745;
+        }
+        /* سبز: موفقیت */
+        .toast-error {
+            background-color: #dc3545;
+        }
+        /* قرمز: خطا */
+        .toast-warning {
+            background-color: #ffc107;
+            color: #000;
+        }
+        /* زرد: هشدار */
+
+        /* دکمه بستن */
+        .toast-custom button {
+            background: transparent;
+            border: none;
+            color: inherit;
+            font-size: 1rem;
+            cursor: pointer;
+        }
+
+        /* انیمیشن‌های Fade In و Fade Out */
+        @keyframes fadein {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes fadeout {
+            from {
+                opacity: 1;
+            }
+
+            to {
+                opacity: 0;
+            }
+        }
+    </style>
+
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/persian-datepicker@1.2.0/dist/css/persian-datepicker.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/persian-date/dist/persian-date.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/persian-datepicker@1.2.0/dist/js/persian-datepicker.min.js"></script>
+
+    <link href="https://cdn.jsdelivr.net/gh/rastikerdar/vazir-font@v30.1.0/dist/font-face.css" rel="stylesheet" type="text/css">
+    <style>
+        body {
+            font-family: 'Vazir', sans-serif;
+        }
+    </style>
+
+       <!-- ✅ اینجا -->
+</head>
+<body>
+    <div class="wrapper">
+        <!-- Sidebar -->
+        <div class="sidebar">
+    <h5>مدیریت سایت</h5>
+    <a href="/AdminPanel/Dashboard/Index"><i class="fa fa-home"></i> صفحه اصلی</a>
+    <a href="/AdminPanel/News/List"><i class="fa fa-bullhorn"></i> اخبار</a>
+    <a href="/AdminPanel/Announcement/List"><i class="fa fa-bullhorn"></i> اطلاعیه‌ها</a>
+    <a href="/AdminPanel/Brand/List"><i class="fa fa-bullhorn"></i> برند</a>
+    <a href="/AdminPanel/Product/Groups"><i class="fa fa-box"></i> انبار کالا</a>
+    <a href="/AdminPanel/Agent/List"><i class="fa fa-users"></i> نمایندگی‌ها</a>
+    <a href="/AdminPanel/FrancoShopReports/SalesReport"><i class="fa fa-shopping-cart"></i> گزارش سفارشات</a>
+    <a href="/AdminPanel/Account/UserList"><i class="fa fa-shopping-cart"></i> کاربران سیستم</a>
+    <hr style="border-color: rgba(255,255,255,0.1);">
+    <a href="/Home/Index"><i class="fa fa-sign-in-alt"></i> ورود به سامانه اصلی</a>
+</div>
+
+
+        <!-- Main Content -->
+        
+
+<main class="col-md-10 ms-sm-auto content">
+    
+<header class="d-flex justify-content-between align-items-center mb-3">
+    <h5>مدیریت محصولات &gt; لیست محصولات گروه انتخابی</h5>
+<form action="/AdminPanel/Account/Logout" area="" method="post">            <button type="submit" class="btn btn-danger">
+                <i class="fa fa-sign-out-alt"></i> خروج
+            </button>
+<input name="__RequestVerificationToken" type="hidden" value="CfDJ8EcDHDswgKFCptCcOww8Oj11fAAJKONic5WfuzB2AlEFTvKwl__KZ_nK984-5gwt_0zJ7wGB1-WuioWxT1RHP19Io4JCXckQnUWmTl1aeDlRfYEEbwCA8M3MImw3QQv_xMdpIVobjz2JqFCQDh-r6GAy1lBu8S8lfL4kbQSsrmQ-G2bMzb5Nh1lZqSvSJX_bog"></form></header>
+
+
+    <div class="card p-4 p-3">
+        <div class="d-flex flex-wrap gap-2 mb-3">
+            <a href="/AdminPanel/SubProduct/RegisterSubProduct" class="btn btn-primary"><i class="fa fa-plus"></i> ایجاد جدید</a>
+            <button class="btn btn-secondary"><i class="fa fa-sync"></i> بارگذاری مجدد لیست</button>
+            <button id="saveOrderBtn" class="btn btn-success btn-sm"><i class="fa fa-save"></i> ذخیره ترتیب</button>
+        </div>
+
+        <div class="table-responsive">
+            
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Sortable/1.15.2/Sortable.min.js"></script>
+
+
+<!-- Modal (hidden inputs no initial value) -->
+<div class="modal fade" id="uploadExcelModal" tabindex="-1" aria-labelledby="uploadExcelModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="uploadExcelModalLabel">
+                    <i class="fa fa-file-excel"></i> آپلود محصولات با اکسل
+                </h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="بستن"></button>
+            </div>
+            <div class="modal-body">
+                <form id="excelUploadForm" enctype="multipart/form-data">
+                    <input type="hidden" name="categoryId">
+                    <input type="hidden" name="brandId">
+
+                    <div class="mb-3">
+                        <label for="excelFile" class="form-label">انتخاب فایل اکسل</label>
+                        <input type="file" class="form-control" id="excelFile" name="file" accept=".xlsx,.xls" required="">
+                    </div>
+
+                    <div class="d-flex justify-content-end">
+                        <button type="submit" class="btn btn-warning btn-sm">
+                            <i class="fa fa-upload"></i> ارسال فایل
+                        </button>
+                        <button type="button" class="btn btn-secondary ms-2" data-bs-dismiss="modal">بستن</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- داخل foreach ردیف‌ها: دکمهٔ آپلود با data-category -->
+
+
+
+
+<table id="crudTable" class="table table-bordered table-striped">
+    <thead class="table-header" style="background:#5986b3 !important">
+        <tr>
+
+                    <th style="width:8%">ترتیب نمایش</th>
+                    <th style="text-align:center; vertical-align:middle">نمایش / عدم نمایش</th>
+                    <th style="text-align:center; vertical-align:middle">عنوان محصول</th>
+                    <th style="text-align:center; vertical-align:middle">موجودیت</th>
+                    <th style="text-align:center; vertical-align:middle">تعداد در کارتن</th>
+                    <th style="text-align:center; vertical-align:middle">قیمت نقدی</th>
+                    <th style="text-align:center; vertical-align:middle">قیمت غیر نقدی</th>
+            <th style="text-align:center; vertical-align:middle">عملیات</th>
+        </tr>
+    </thead>
+    <tbody>
+            <tr data-id="5ddc0306-c209-40aa-8770-2dc0cf498013">
+                    <td><i class="fa fa-bars drag-handle"></i> &nbsp;&nbsp; 32</td>
+                        <td class="text-center">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="red" viewBox="0 0 16 16">
+                                        <path d="M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708z"></path>
+                                    </svg>
+                        </td>
+                        <td class="text-center">
+واتر پمپ Jac J5 1800cc 1.8                        </td>
+                        <td class="text-center">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="red" viewBox="0 0 16 16">
+                                        <path d="M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708z"></path>
+                                    </svg>
+                        </td>
+                        <td class="text-center">
+20                        </td>
+                        <td class="text-center">
+0                        </td>
+                        <td class="text-center">
+6,450,000                        </td>
+
+                <td class="text-center">
+                    <a class="btn btn-sm btn-primary" href="/AdminPanel/SubProduct/Edit/5ddc0306-c209-40aa-8770-2dc0cf498013">
+                        <i class="fa fa-edit"></i>
+                    </a>
+
+                    <a class="btn btn-sm btn-danger" href="/AdminPanel/SubProduct/Delete/5ddc0306-c209-40aa-8770-2dc0cf498013" onclick="return confirm('آیا از حذف این رکورد مطمئن هستید؟');">
+                        <i class="fa fa-trash"></i>
+                    </a>
+
+
+                </td>
+            </tr>
+            <tr data-id="a01a5824-bfc6-424d-9f29-a84c07304d20">
+                    <td><i class="fa fa-bars drag-handle"></i> &nbsp;&nbsp; 30</td>
+                        <td class="text-center">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="red" viewBox="0 0 16 16">
+                                        <path d="M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708z"></path>
+                                    </svg>
+                        </td>
+                        <td class="text-center">
+مغزی واتر پمپ MVM 110                        </td>
+                        <td class="text-center">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="red" viewBox="0 0 16 16">
+                                        <path d="M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708z"></path>
+                                    </svg>
+                        </td>
+                        <td class="text-center">
+20                        </td>
+                        <td class="text-center">
+0                        </td>
+                        <td class="text-center">
+4,590,000                        </td>
+
+                <td class="text-center">
+                    <a class="btn btn-sm btn-primary" href="/AdminPanel/SubProduct/Edit/a01a5824-bfc6-424d-9f29-a84c07304d20">
+                        <i class="fa fa-edit"></i>
+                    </a>
+
+                    <a class="btn btn-sm btn-danger" href="/AdminPanel/SubProduct/Delete/a01a5824-bfc6-424d-9f29-a84c07304d20" onclick="return confirm('آیا از حذف این رکورد مطمئن هستید؟');">
+                        <i class="fa fa-trash"></i>
+                    </a>
+
+
+                </td>
+            </tr>
+            <tr data-id="9cbbd359-8682-4eeb-bb70-af246f0bf53b">
+                    <td><i class="fa fa-bars drag-handle"></i> &nbsp;&nbsp; 28</td>
+                        <td class="text-center">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="red" viewBox="0 0 16 16">
+                                        <path d="M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708z"></path>
+                                    </svg>
+                        </td>
+                        <td class="text-center">
+واترپمپ ARRIZO5                        </td>
+                        <td class="text-center">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="red" viewBox="0 0 16 16">
+                                        <path d="M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708z"></path>
+                                    </svg>
+                        </td>
+                        <td class="text-center">
+20                        </td>
+                        <td class="text-center">
+0                        </td>
+                        <td class="text-center">
+8,430,000                        </td>
+
+                <td class="text-center">
+                    <a class="btn btn-sm btn-primary" href="/AdminPanel/SubProduct/Edit/9cbbd359-8682-4eeb-bb70-af246f0bf53b">
+                        <i class="fa fa-edit"></i>
+                    </a>
+
+                    <a class="btn btn-sm btn-danger" href="/AdminPanel/SubProduct/Delete/9cbbd359-8682-4eeb-bb70-af246f0bf53b" onclick="return confirm('آیا از حذف این رکورد مطمئن هستید؟');">
+                        <i class="fa fa-trash"></i>
+                    </a>
+
+
+                </td>
+            </tr>
+            <tr data-id="46fea544-d3c8-49df-9915-0bafa3d80aec">
+                    <td><i class="fa fa-bars drag-handle"></i> &nbsp;&nbsp; 27</td>
+                        <td class="text-center">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="red" viewBox="0 0 16 16">
+                                        <path d="M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708z"></path>
+                                    </svg>
+                        </td>
+                        <td class="text-center">
+واتر پمپ MVM X22                        </td>
+                        <td class="text-center">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="red" viewBox="0 0 16 16">
+                                        <path d="M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708z"></path>
+                                    </svg>
+                        </td>
+                        <td class="text-center">
+20                        </td>
+                        <td class="text-center">
+0                        </td>
+                        <td class="text-center">
+9,250,000                        </td>
+
+                <td class="text-center">
+                    <a class="btn btn-sm btn-primary" href="/AdminPanel/SubProduct/Edit/46fea544-d3c8-49df-9915-0bafa3d80aec">
+                        <i class="fa fa-edit"></i>
+                    </a>
+
+                    <a class="btn btn-sm btn-danger" href="/AdminPanel/SubProduct/Delete/46fea544-d3c8-49df-9915-0bafa3d80aec" onclick="return confirm('آیا از حذف این رکورد مطمئن هستید؟');">
+                        <i class="fa fa-trash"></i>
+                    </a>
+
+
+                </td>
+            </tr>
+            <tr data-id="43c773ff-5ab1-435c-b26f-d96bd0ad3e83">
+                    <td><i class="fa fa-bars drag-handle"></i> &nbsp;&nbsp; 22</td>
+                        <td class="text-center">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="red" viewBox="0 0 16 16">
+                                        <path d="M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708z"></path>
+                                    </svg>
+                        </td>
+                        <td class="text-center">
+واتر پمپ CHERY MVM  s 110                        </td>
+                        <td class="text-center">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="red" viewBox="0 0 16 16">
+                                        <path d="M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708z"></path>
+                                    </svg>
+                        </td>
+                        <td class="text-center">
+20                        </td>
+                        <td class="text-center">
+0                        </td>
+                        <td class="text-center">
+7,850,000                        </td>
+
+                <td class="text-center">
+                    <a class="btn btn-sm btn-primary" href="/AdminPanel/SubProduct/Edit/43c773ff-5ab1-435c-b26f-d96bd0ad3e83">
+                        <i class="fa fa-edit"></i>
+                    </a>
+
+                    <a class="btn btn-sm btn-danger" href="/AdminPanel/SubProduct/Delete/43c773ff-5ab1-435c-b26f-d96bd0ad3e83" onclick="return confirm('آیا از حذف این رکورد مطمئن هستید؟');">
+                        <i class="fa fa-trash"></i>
+                    </a>
+
+
+                </td>
+            </tr>
+            <tr data-id="bf3cdbf5-98c2-41a1-ac18-2424e0b67cc9">
+                    <td><i class="fa fa-bars drag-handle"></i> &nbsp;&nbsp; 20</td>
+                        <td class="text-center">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="red" viewBox="0 0 16 16">
+                                        <path d="M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708z"></path>
+                                    </svg>
+                        </td>
+                        <td class="text-center">
+واتر پمپ هیوندا اکسنت                        </td>
+                        <td class="text-center">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="red" viewBox="0 0 16 16">
+                                        <path d="M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708z"></path>
+                                    </svg>
+                        </td>
+                        <td class="text-center">
+20                        </td>
+                        <td class="text-center">
+0                        </td>
+                        <td class="text-center">
+3,200,000                        </td>
+
+                <td class="text-center">
+                    <a class="btn btn-sm btn-primary" href="/AdminPanel/SubProduct/Edit/bf3cdbf5-98c2-41a1-ac18-2424e0b67cc9">
+                        <i class="fa fa-edit"></i>
+                    </a>
+
+                    <a class="btn btn-sm btn-danger" href="/AdminPanel/SubProduct/Delete/bf3cdbf5-98c2-41a1-ac18-2424e0b67cc9" onclick="return confirm('آیا از حذف این رکورد مطمئن هستید؟');">
+                        <i class="fa fa-trash"></i>
+                    </a>
+
+
+                </td>
+            </tr>
+            <tr data-id="adcaec6d-02e6-4f52-afb0-f079bd446aaf">
+                    <td><i class="fa fa-bars drag-handle"></i> &nbsp;&nbsp; 16</td>
+                        <td class="text-center">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="red" viewBox="0 0 16 16">
+                                        <path d="M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708z"></path>
+                                    </svg>
+                        </td>
+                        <td class="text-center">
+واتر پمپ JAC J5 دنده ای / S3 /برلیانس 1.5 / آریو                        </td>
+                        <td class="text-center">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="red" viewBox="0 0 16 16">
+                                        <path d="M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708z"></path>
+                                    </svg>
+                        </td>
+                        <td class="text-center">
+20                        </td>
+                        <td class="text-center">
+0                        </td>
+                        <td class="text-center">
+5,970,000                        </td>
+
+                <td class="text-center">
+                    <a class="btn btn-sm btn-primary" href="/AdminPanel/SubProduct/Edit/adcaec6d-02e6-4f52-afb0-f079bd446aaf">
+                        <i class="fa fa-edit"></i>
+                    </a>
+
+                    <a class="btn btn-sm btn-danger" href="/AdminPanel/SubProduct/Delete/adcaec6d-02e6-4f52-afb0-f079bd446aaf" onclick="return confirm('آیا از حذف این رکورد مطمئن هستید؟');">
+                        <i class="fa fa-trash"></i>
+                    </a>
+
+
+                </td>
+            </tr>
+            <tr data-id="322992bf-c1b4-412c-954a-8279b26f7783">
+                    <td><i class="fa fa-bars drag-handle"></i> &nbsp;&nbsp; 15</td>
+                        <td class="text-center">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="red" viewBox="0 0 16 16">
+                                        <path d="M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708z"></path>
+                                    </svg>
+                        </td>
+                        <td class="text-center">
+واتر پمپ Jac s5 2000cc                        </td>
+                        <td class="text-center">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="red" viewBox="0 0 16 16">
+                                        <path d="M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708z"></path>
+                                    </svg>
+                        </td>
+                        <td class="text-center">
+20                        </td>
+                        <td class="text-center">
+0                        </td>
+                        <td class="text-center">
+9,750,000                        </td>
+
+                <td class="text-center">
+                    <a class="btn btn-sm btn-primary" href="/AdminPanel/SubProduct/Edit/322992bf-c1b4-412c-954a-8279b26f7783">
+                        <i class="fa fa-edit"></i>
+                    </a>
+
+                    <a class="btn btn-sm btn-danger" href="/AdminPanel/SubProduct/Delete/322992bf-c1b4-412c-954a-8279b26f7783" onclick="return confirm('آیا از حذف این رکورد مطمئن هستید؟');">
+                        <i class="fa fa-trash"></i>
+                    </a>
+
+
+                </td>
+            </tr>
+            <tr data-id="19f2bab2-1ce6-41ac-9e5e-3be3301f0cfb">
+                    <td><i class="fa fa-bars drag-handle"></i> &nbsp;&nbsp; 13</td>
+                        <td class="text-center">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="red" viewBox="0 0 16 16">
+                                        <path d="M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708z"></path>
+                                    </svg>
+                        </td>
+                        <td class="text-center">
+واتر پمپ Lifan x60 1800cc                        </td>
+                        <td class="text-center">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="red" viewBox="0 0 16 16">
+                                        <path d="M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708z"></path>
+                                    </svg>
+                        </td>
+                        <td class="text-center">
+20                        </td>
+                        <td class="text-center">
+0                        </td>
+                        <td class="text-center">
+8,200,000                        </td>
+
+                <td class="text-center">
+                    <a class="btn btn-sm btn-primary" href="/AdminPanel/SubProduct/Edit/19f2bab2-1ce6-41ac-9e5e-3be3301f0cfb">
+                        <i class="fa fa-edit"></i>
+                    </a>
+
+                    <a class="btn btn-sm btn-danger" href="/AdminPanel/SubProduct/Delete/19f2bab2-1ce6-41ac-9e5e-3be3301f0cfb" onclick="return confirm('آیا از حذف این رکورد مطمئن هستید؟');">
+                        <i class="fa fa-trash"></i>
+                    </a>
+
+
+                </td>
+            </tr>
+            <tr data-id="5429bf99-1d2e-4d35-82ab-3765d619c8f4">
+                    <td><i class="fa fa-bars drag-handle"></i> &nbsp;&nbsp; 12</td>
+                        <td class="text-center">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="red" viewBox="0 0 16 16">
+                                        <path d="M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708z"></path>
+                                    </svg>
+                        </td>
+                        <td class="text-center">
+واتر پمپ 530 , MVM - X33                        </td>
+                        <td class="text-center">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="red" viewBox="0 0 16 16">
+                                        <path d="M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708z"></path>
+                                    </svg>
+                        </td>
+                        <td class="text-center">
+20                        </td>
+                        <td class="text-center">
+0                        </td>
+                        <td class="text-center">
+7,630,000                        </td>
+
+                <td class="text-center">
+                    <a class="btn btn-sm btn-primary" href="/AdminPanel/SubProduct/Edit/5429bf99-1d2e-4d35-82ab-3765d619c8f4">
+                        <i class="fa fa-edit"></i>
+                    </a>
+
+                    <a class="btn btn-sm btn-danger" href="/AdminPanel/SubProduct/Delete/5429bf99-1d2e-4d35-82ab-3765d619c8f4" onclick="return confirm('آیا از حذف این رکورد مطمئن هستید؟');">
+                        <i class="fa fa-trash"></i>
+                    </a>
+
+
+                </td>
+            </tr>
+            <tr data-id="390f514d-472b-40fe-9e0a-4321186ec0f2">
+                    <td><i class="fa fa-bars drag-handle"></i> &nbsp;&nbsp; 11</td>
+                        <td class="text-center">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="red" viewBox="0 0 16 16">
+                                        <path d="M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708z"></path>
+                                    </svg>
+                        </td>
+                        <td class="text-center">
+واتر پمپ 315 MVM                        </td>
+                        <td class="text-center">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="red" viewBox="0 0 16 16">
+                                        <path d="M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708z"></path>
+                                    </svg>
+                        </td>
+                        <td class="text-center">
+20                        </td>
+                        <td class="text-center">
+0                        </td>
+                        <td class="text-center">
+7,750,000                        </td>
+
+                <td class="text-center">
+                    <a class="btn btn-sm btn-primary" href="/AdminPanel/SubProduct/Edit/390f514d-472b-40fe-9e0a-4321186ec0f2">
+                        <i class="fa fa-edit"></i>
+                    </a>
+
+                    <a class="btn btn-sm btn-danger" href="/AdminPanel/SubProduct/Delete/390f514d-472b-40fe-9e0a-4321186ec0f2" onclick="return confirm('آیا از حذف این رکورد مطمئن هستید؟');">
+                        <i class="fa fa-trash"></i>
+                    </a>
+
+
+                </td>
+            </tr>
+            <tr data-id="ac51be6c-e923-4e19-b69c-6fe72436b099">
+                    <td><i class="fa fa-bars drag-handle"></i> &nbsp;&nbsp; 10</td>
+                        <td class="text-center">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="green" viewBox="0 0 16 16">
+                                        <path d="M13.485 1.929a1 1 0 0 1 .086 1.414l-7.071 8a1 1 0 0 1-1.497 0l-3.536-4a1 1 0 1 1 1.497-1.328L6 8.586l6.536-7.414a1 1 0 0 1 .949-.243z"></path>
+                                    </svg>
+                        </td>
+                        <td class="text-center">
+اویل پمپ پیکان انژکتور                        </td>
+                        <td class="text-center">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="red" viewBox="0 0 16 16">
+                                        <path d="M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708z"></path>
+                                    </svg>
+                        </td>
+                        <td class="text-center">
+6                        </td>
+                        <td class="text-center">
+0                        </td>
+                        <td class="text-center">
+9,502,000                        </td>
+
+                <td class="text-center">
+                    <a class="btn btn-sm btn-primary" href="/AdminPanel/SubProduct/Edit/ac51be6c-e923-4e19-b69c-6fe72436b099">
+                        <i class="fa fa-edit"></i>
+                    </a>
+
+                    <a class="btn btn-sm btn-danger" href="/AdminPanel/SubProduct/Delete/ac51be6c-e923-4e19-b69c-6fe72436b099" onclick="return confirm('آیا از حذف این رکورد مطمئن هستید؟');">
+                        <i class="fa fa-trash"></i>
+                    </a>
+
+
+                </td>
+            </tr>
+            <tr data-id="63746cf4-cdcc-4444-95fc-f73f1208168b">
+                    <td><i class="fa fa-bars drag-handle"></i> &nbsp;&nbsp; 10</td>
+                        <td class="text-center">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="red" viewBox="0 0 16 16">
+                                        <path d="M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708z"></path>
+                                    </svg>
+                        </td>
+                        <td class="text-center">
+واتر پمپ کیا ریو                        </td>
+                        <td class="text-center">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="red" viewBox="0 0 16 16">
+                                        <path d="M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708z"></path>
+                                    </svg>
+                        </td>
+                        <td class="text-center">
+20                        </td>
+                        <td class="text-center">
+0                        </td>
+                        <td class="text-center">
+7,590,000                        </td>
+
+                <td class="text-center">
+                    <a class="btn btn-sm btn-primary" href="/AdminPanel/SubProduct/Edit/63746cf4-cdcc-4444-95fc-f73f1208168b">
+                        <i class="fa fa-edit"></i>
+                    </a>
+
+                    <a class="btn btn-sm btn-danger" href="/AdminPanel/SubProduct/Delete/63746cf4-cdcc-4444-95fc-f73f1208168b" onclick="return confirm('آیا از حذف این رکورد مطمئن هستید؟');">
+                        <i class="fa fa-trash"></i>
+                    </a>
+
+
+                </td>
+            </tr>
+            <tr data-id="13637949-51fc-4068-a7d2-f8ef89d0450b">
+                    <td><i class="fa fa-bars drag-handle"></i> &nbsp;&nbsp; 10</td>
+                        <td class="text-center">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="red" viewBox="0 0 16 16">
+                                        <path d="M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708z"></path>
+                                    </svg>
+                        </td>
+                        <td class="text-center">
+واتر پمپ 110 MVM                        </td>
+                        <td class="text-center">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="red" viewBox="0 0 16 16">
+                                        <path d="M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708z"></path>
+                                    </svg>
+                        </td>
+                        <td class="text-center">
+20                        </td>
+                        <td class="text-center">
+0                        </td>
+                        <td class="text-center">
+7,860,000                        </td>
+
+                <td class="text-center">
+                    <a class="btn btn-sm btn-primary" href="/AdminPanel/SubProduct/Edit/13637949-51fc-4068-a7d2-f8ef89d0450b">
+                        <i class="fa fa-edit"></i>
+                    </a>
+
+                    <a class="btn btn-sm btn-danger" href="/AdminPanel/SubProduct/Delete/13637949-51fc-4068-a7d2-f8ef89d0450b" onclick="return confirm('آیا از حذف این رکورد مطمئن هستید؟');">
+                        <i class="fa fa-trash"></i>
+                    </a>
+
+
+                </td>
+            </tr>
+            <tr data-id="acadfdff-9772-44b1-b88b-e60442a97abc">
+                    <td><i class="fa fa-bars drag-handle"></i> &nbsp;&nbsp; 9</td>
+                        <td class="text-center">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="green" viewBox="0 0 16 16">
+                                        <path d="M13.485 1.929a1 1 0 0 1 .086 1.414l-7.071 8a1 1 0 0 1-1.497 0l-3.536-4a1 1 0 1 1 1.497-1.328L6 8.586l6.536-7.414a1 1 0 0 1 .949-.243z"></path>
+                                    </svg>
+                        </td>
+                        <td class="text-center">
+واتر پمپ زانتیا                        </td>
+                        <td class="text-center">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="green" viewBox="0 0 16 16">
+                                        <path d="M13.485 1.929a1 1 0 0 1 .086 1.414l-7.071 8a1 1 0 0 1-1.497 0l-3.536-4a1 1 0 1 1 1.497-1.328L6 8.586l6.536-7.414a1 1 0 0 1 .949-.243z"></path>
+                                    </svg>
+                        </td>
+                        <td class="text-center">
+20                        </td>
+                        <td class="text-center">
+0                        </td>
+                        <td class="text-center">
+10,603,000                        </td>
+
+                <td class="text-center">
+                    <a class="btn btn-sm btn-primary" href="/AdminPanel/SubProduct/Edit/acadfdff-9772-44b1-b88b-e60442a97abc">
+                        <i class="fa fa-edit"></i>
+                    </a>
+
+                    <a class="btn btn-sm btn-danger" href="/AdminPanel/SubProduct/Delete/acadfdff-9772-44b1-b88b-e60442a97abc" onclick="return confirm('آیا از حذف این رکورد مطمئن هستید؟');">
+                        <i class="fa fa-trash"></i>
+                    </a>
+
+
+                </td>
+            </tr>
+            <tr data-id="8f044231-b96a-4d17-add8-5b4e2fc7270f">
+                    <td><i class="fa fa-bars drag-handle"></i> &nbsp;&nbsp; 9</td>
+                        <td class="text-center">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="green" viewBox="0 0 16 16">
+                                        <path d="M13.485 1.929a1 1 0 0 1 .086 1.414l-7.071 8a1 1 0 0 1-1.497 0l-3.536-4a1 1 0 1 1 1.497-1.328L6 8.586l6.536-7.414a1 1 0 0 1 .949-.243z"></path>
+                                    </svg>
+                        </td>
+                        <td class="text-center">
+واتر پمپ سمند EF-7                        </td>
+                        <td class="text-center">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="red" viewBox="0 0 16 16">
+                                        <path d="M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708z"></path>
+                                    </svg>
+                        </td>
+                        <td class="text-center">
+20                        </td>
+                        <td class="text-center">
+0                        </td>
+                        <td class="text-center">
+10,450,000                        </td>
+
+                <td class="text-center">
+                    <a class="btn btn-sm btn-primary" href="/AdminPanel/SubProduct/Edit/8f044231-b96a-4d17-add8-5b4e2fc7270f">
+                        <i class="fa fa-edit"></i>
+                    </a>
+
+                    <a class="btn btn-sm btn-danger" href="/AdminPanel/SubProduct/Delete/8f044231-b96a-4d17-add8-5b4e2fc7270f" onclick="return confirm('آیا از حذف این رکورد مطمئن هستید؟');">
+                        <i class="fa fa-trash"></i>
+                    </a>
+
+
+                </td>
+            </tr>
+            <tr data-id="042695ce-be2e-4be0-8f85-47dd76a37bbb">
+                    <td><i class="fa fa-bars drag-handle"></i> &nbsp;&nbsp; 9</td>
+                        <td class="text-center">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="green" viewBox="0 0 16 16">
+                                        <path d="M13.485 1.929a1 1 0 0 1 .086 1.414l-7.071 8a1 1 0 0 1-1.497 0l-3.536-4a1 1 0 1 1 1.497-1.328L6 8.586l6.536-7.414a1 1 0 0 1 .949-.243z"></path>
+                                    </svg>
+                        </td>
+                        <td class="text-center">
+واتر پمپ شاهین                        </td>
+                        <td class="text-center">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="red" viewBox="0 0 16 16">
+                                        <path d="M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708z"></path>
+                                    </svg>
+                        </td>
+                        <td class="text-center">
+20                        </td>
+                        <td class="text-center">
+0                        </td>
+                        <td class="text-center">
+9,927,000                        </td>
+
+                <td class="text-center">
+                    <a class="btn btn-sm btn-primary" href="/AdminPanel/SubProduct/Edit/042695ce-be2e-4be0-8f85-47dd76a37bbb">
+                        <i class="fa fa-edit"></i>
+                    </a>
+
+                    <a class="btn btn-sm btn-danger" href="/AdminPanel/SubProduct/Delete/042695ce-be2e-4be0-8f85-47dd76a37bbb" onclick="return confirm('آیا از حذف این رکورد مطمئن هستید؟');">
+                        <i class="fa fa-trash"></i>
+                    </a>
+
+
+                </td>
+            </tr>
+            <tr data-id="9853ef3c-edd3-4e7c-b43b-b1eb7bd9883b">
+                    <td><i class="fa fa-bars drag-handle"></i> &nbsp;&nbsp; 9</td>
+                        <td class="text-center">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="green" viewBox="0 0 16 16">
+                                        <path d="M13.485 1.929a1 1 0 0 1 .086 1.414l-7.071 8a1 1 0 0 1-1.497 0l-3.536-4a1 1 0 1 1 1.497-1.328L6 8.586l6.536-7.414a1 1 0 0 1 .949-.243z"></path>
+                                    </svg>
+                        </td>
+                        <td class="text-center">
+واتر پمپ نیسان ( پره آهنی )                        </td>
+                        <td class="text-center">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="green" viewBox="0 0 16 16">
+                                        <path d="M13.485 1.929a1 1 0 0 1 .086 1.414l-7.071 8a1 1 0 0 1-1.497 0l-3.536-4a1 1 0 1 1 1.497-1.328L6 8.586l6.536-7.414a1 1 0 0 1 .949-.243z"></path>
+                                    </svg>
+                        </td>
+                        <td class="text-center">
+20                        </td>
+                        <td class="text-center">
+0                        </td>
+                        <td class="text-center">
+9,745,000                        </td>
+
+                <td class="text-center">
+                    <a class="btn btn-sm btn-primary" href="/AdminPanel/SubProduct/Edit/9853ef3c-edd3-4e7c-b43b-b1eb7bd9883b">
+                        <i class="fa fa-edit"></i>
+                    </a>
+
+                    <a class="btn btn-sm btn-danger" href="/AdminPanel/SubProduct/Delete/9853ef3c-edd3-4e7c-b43b-b1eb7bd9883b" onclick="return confirm('آیا از حذف این رکورد مطمئن هستید؟');">
+                        <i class="fa fa-trash"></i>
+                    </a>
+
+
+                </td>
+            </tr>
+            <tr data-id="2af0e5f2-293d-46e0-aec9-026b9ce2b9e2">
+                    <td><i class="fa fa-bars drag-handle"></i> &nbsp;&nbsp; 7</td>
+                        <td class="text-center">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="green" viewBox="0 0 16 16">
+                                        <path d="M13.485 1.929a1 1 0 0 1 .086 1.414l-7.071 8a1 1 0 0 1-1.497 0l-3.536-4a1 1 0 1 1 1.497-1.328L6 8.586l6.536-7.414a1 1 0 0 1 .949-.243z"></path>
+                                    </svg>
+                        </td>
+                        <td class="text-center">
+واتر پمپ لوگان  ال90                        </td>
+                        <td class="text-center">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="red" viewBox="0 0 16 16">
+                                        <path d="M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708z"></path>
+                                    </svg>
+                        </td>
+                        <td class="text-center">
+20                        </td>
+                        <td class="text-center">
+0                        </td>
+                        <td class="text-center">
+12,826,000                        </td>
+
+                <td class="text-center">
+                    <a class="btn btn-sm btn-primary" href="/AdminPanel/SubProduct/Edit/2af0e5f2-293d-46e0-aec9-026b9ce2b9e2">
+                        <i class="fa fa-edit"></i>
+                    </a>
+
+                    <a class="btn btn-sm btn-danger" href="/AdminPanel/SubProduct/Delete/2af0e5f2-293d-46e0-aec9-026b9ce2b9e2" onclick="return confirm('آیا از حذف این رکورد مطمئن هستید؟');">
+                        <i class="fa fa-trash"></i>
+                    </a>
+
+
+                </td>
+            </tr>
+            <tr data-id="72f75c7a-81c7-4dd2-be2b-5585ebe8d0ce">
+                    <td><i class="fa fa-bars drag-handle"></i> &nbsp;&nbsp; 6</td>
+                        <td class="text-center">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="green" viewBox="0 0 16 16">
+                                        <path d="M13.485 1.929a1 1 0 0 1 .086 1.414l-7.071 8a1 1 0 0 1-1.497 0l-3.536-4a1 1 0 1 1 1.497-1.328L6 8.586l6.536-7.414a1 1 0 0 1 .949-.243z"></path>
+                                    </svg>
+                        </td>
+                        <td class="text-center">
+واتر پمپ پژو 206 تیپ 5 - 19 دندانه                        </td>
+                        <td class="text-center">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="green" viewBox="0 0 16 16">
+                                        <path d="M13.485 1.929a1 1 0 0 1 .086 1.414l-7.071 8a1 1 0 0 1-1.497 0l-3.536-4a1 1 0 1 1 1.497-1.328L6 8.586l6.536-7.414a1 1 0 0 1 .949-.243z"></path>
+                                    </svg>
+                        </td>
+                        <td class="text-center">
+20                        </td>
+                        <td class="text-center">
+0                        </td>
+                        <td class="text-center">
+10,350,000                        </td>
+
+                <td class="text-center">
+                    <a class="btn btn-sm btn-primary" href="/AdminPanel/SubProduct/Edit/72f75c7a-81c7-4dd2-be2b-5585ebe8d0ce">
+                        <i class="fa fa-edit"></i>
+                    </a>
+
+                    <a class="btn btn-sm btn-danger" href="/AdminPanel/SubProduct/Delete/72f75c7a-81c7-4dd2-be2b-5585ebe8d0ce" onclick="return confirm('آیا از حذف این رکورد مطمئن هستید؟');">
+                        <i class="fa fa-trash"></i>
+                    </a>
+
+
+                </td>
+            </tr>
+            <tr data-id="ea378474-7740-455a-bce1-8fa046a8a54b">
+                    <td><i class="fa fa-bars drag-handle"></i> &nbsp;&nbsp; 5</td>
+                        <td class="text-center">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="green" viewBox="0 0 16 16">
+                                        <path d="M13.485 1.929a1 1 0 0 1 .086 1.414l-7.071 8a1 1 0 0 1-1.497 0l-3.536-4a1 1 0 1 1 1.497-1.328L6 8.586l6.536-7.414a1 1 0 0 1 .949-.243z"></path>
+                                    </svg>
+                        </td>
+                        <td class="text-center">
+واتر پمپ پژو 206 تیپ 2 - 18 دندانه                        </td>
+                        <td class="text-center">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="green" viewBox="0 0 16 16">
+                                        <path d="M13.485 1.929a1 1 0 0 1 .086 1.414l-7.071 8a1 1 0 0 1-1.497 0l-3.536-4a1 1 0 1 1 1.497-1.328L6 8.586l6.536-7.414a1 1 0 0 1 .949-.243z"></path>
+                                    </svg>
+                        </td>
+                        <td class="text-center">
+20                        </td>
+                        <td class="text-center">
+0                        </td>
+                        <td class="text-center">
+9,667,000                        </td>
+
+                <td class="text-center">
+                    <a class="btn btn-sm btn-primary" href="/AdminPanel/SubProduct/Edit/ea378474-7740-455a-bce1-8fa046a8a54b">
+                        <i class="fa fa-edit"></i>
+                    </a>
+
+                    <a class="btn btn-sm btn-danger" href="/AdminPanel/SubProduct/Delete/ea378474-7740-455a-bce1-8fa046a8a54b" onclick="return confirm('آیا از حذف این رکورد مطمئن هستید؟');">
+                        <i class="fa fa-trash"></i>
+                    </a>
+
+
+                </td>
+            </tr>
+            <tr data-id="805bc90a-b644-48f3-a434-51bff49aea22">
+                    <td><i class="fa fa-bars drag-handle"></i> &nbsp;&nbsp; 3</td>
+                        <td class="text-center">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="green" viewBox="0 0 16 16">
+                                        <path d="M13.485 1.929a1 1 0 0 1 .086 1.414l-7.071 8a1 1 0 0 1-1.497 0l-3.536-4a1 1 0 1 1 1.497-1.328L6 8.586l6.536-7.414a1 1 0 0 1 .949-.243z"></path>
+                                    </svg>
+                        </td>
+                        <td class="text-center">
+واتر پمپ پژو 405 ( هشت پره ، پره فلزی )                        </td>
+                        <td class="text-center">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="green" viewBox="0 0 16 16">
+                                        <path d="M13.485 1.929a1 1 0 0 1 .086 1.414l-7.071 8a1 1 0 0 1-1.497 0l-3.536-4a1 1 0 1 1 1.497-1.328L6 8.586l6.536-7.414a1 1 0 0 1 .949-.243z"></path>
+                                    </svg>
+                        </td>
+                        <td class="text-center">
+20                        </td>
+                        <td class="text-center">
+0                        </td>
+                        <td class="text-center">
+10,518,000                        </td>
+
+                <td class="text-center">
+                    <a class="btn btn-sm btn-primary" href="/AdminPanel/SubProduct/Edit/805bc90a-b644-48f3-a434-51bff49aea22">
+                        <i class="fa fa-edit"></i>
+                    </a>
+
+                    <a class="btn btn-sm btn-danger" href="/AdminPanel/SubProduct/Delete/805bc90a-b644-48f3-a434-51bff49aea22" onclick="return confirm('آیا از حذف این رکورد مطمئن هستید؟');">
+                        <i class="fa fa-trash"></i>
+                    </a>
+
+
+                </td>
+            </tr>
+            <tr data-id="e12d0bee-bf4d-4ad2-9418-1de7f6cb13fa">
+                    <td><i class="fa fa-bars drag-handle"></i> &nbsp;&nbsp; 2</td>
+                        <td class="text-center">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="green" viewBox="0 0 16 16">
+                                        <path d="M13.485 1.929a1 1 0 0 1 .086 1.414l-7.071 8a1 1 0 0 1-1.497 0l-3.536-4a1 1 0 1 1 1.497-1.328L6 8.586l6.536-7.414a1 1 0 0 1 .949-.243z"></path>
+                                    </svg>
+                        </td>
+                        <td class="text-center">
+واتر پمپ پژو 405 (هشت پره)                        </td>
+                        <td class="text-center">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="green" viewBox="0 0 16 16">
+                                        <path d="M13.485 1.929a1 1 0 0 1 .086 1.414l-7.071 8a1 1 0 0 1-1.497 0l-3.536-4a1 1 0 1 1 1.497-1.328L6 8.586l6.536-7.414a1 1 0 0 1 .949-.243z"></path>
+                                    </svg>
+                        </td>
+                        <td class="text-center">
+20                        </td>
+                        <td class="text-center">
+0                        </td>
+                        <td class="text-center">
+10,518,000                        </td>
+
+                <td class="text-center">
+                    <a class="btn btn-sm btn-primary" href="/AdminPanel/SubProduct/Edit/e12d0bee-bf4d-4ad2-9418-1de7f6cb13fa">
+                        <i class="fa fa-edit"></i>
+                    </a>
+
+                    <a class="btn btn-sm btn-danger" href="/AdminPanel/SubProduct/Delete/e12d0bee-bf4d-4ad2-9418-1de7f6cb13fa" onclick="return confirm('آیا از حذف این رکورد مطمئن هستید؟');">
+                        <i class="fa fa-trash"></i>
+                    </a>
+
+
+                </td>
+            </tr>
+            <tr data-id="16758159-10c3-4be3-95e3-cd6f0ca865c6">
+                    <td><i class="fa fa-bars drag-handle"></i> &nbsp;&nbsp; 1</td>
+                        <td class="text-center">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="green" viewBox="0 0 16 16">
+                                        <path d="M13.485 1.929a1 1 0 0 1 .086 1.414l-7.071 8a1 1 0 0 1-1.497 0l-3.536-4a1 1 0 1 1 1.497-1.328L6 8.586l6.536-7.414a1 1 0 0 1 .949-.243z"></path>
+                                    </svg>
+                        </td>
+                        <td class="text-center">
+واتر پمپ پراید                        </td>
+                        <td class="text-center">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="red" viewBox="0 0 16 16">
+                                        <path d="M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708z"></path>
+                                    </svg>
+                        </td>
+                        <td class="text-center">
+20                        </td>
+                        <td class="text-center">
+0                        </td>
+                        <td class="text-center">
+9,093,000                        </td>
+
+                <td class="text-center">
+                    <a class="btn btn-sm btn-primary" href="/AdminPanel/SubProduct/Edit/16758159-10c3-4be3-95e3-cd6f0ca865c6">
+                        <i class="fa fa-edit"></i>
+                    </a>
+
+                    <a class="btn btn-sm btn-danger" href="/AdminPanel/SubProduct/Delete/16758159-10c3-4be3-95e3-cd6f0ca865c6" onclick="return confirm('آیا از حذف این رکورد مطمئن هستید؟');">
+                        <i class="fa fa-trash"></i>
+                    </a>
+
+
+                </td>
+            </tr>
+            <tr data-id="4626de41-021e-4bc6-b7fb-fbfe9c26c7c2">
+                    <td><i class="fa fa-bars drag-handle"></i> &nbsp;&nbsp; 1</td>
+                        <td class="text-center">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="green" viewBox="0 0 16 16">
+                                        <path d="M13.485 1.929a1 1 0 0 1 .086 1.414l-7.071 8a1 1 0 0 1-1.497 0l-3.536-4a1 1 0 1 1 1.497-1.328L6 8.586l6.536-7.414a1 1 0 0 1 .949-.243z"></path>
+                                    </svg>
+                        </td>
+                        <td class="text-center">
+واتر پمپ پیکان                        </td>
+                        <td class="text-center">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="green" viewBox="0 0 16 16">
+                                        <path d="M13.485 1.929a1 1 0 0 1 .086 1.414l-7.071 8a1 1 0 0 1-1.497 0l-3.536-4a1 1 0 1 1 1.497-1.328L6 8.586l6.536-7.414a1 1 0 0 1 .949-.243z"></path>
+                                    </svg>
+                        </td>
+                        <td class="text-center">
+20                        </td>
+                        <td class="text-center">
+0                        </td>
+                        <td class="text-center">
+9,320,000                        </td>
+
+                <td class="text-center">
+                    <a class="btn btn-sm btn-primary" href="/AdminPanel/SubProduct/Edit/4626de41-021e-4bc6-b7fb-fbfe9c26c7c2">
+                        <i class="fa fa-edit"></i>
+                    </a>
+
+                    <a class="btn btn-sm btn-danger" href="/AdminPanel/SubProduct/Delete/4626de41-021e-4bc6-b7fb-fbfe9c26c7c2" onclick="return confirm('آیا از حذف این رکورد مطمئن هستید؟');">
+                        <i class="fa fa-trash"></i>
+                    </a>
+
+
+                </td>
+            </tr>
+            <tr data-id="c69f283e-17eb-4b34-8f1e-ab20a7375bdf">
+                    <td><i class="fa fa-bars drag-handle"></i> &nbsp;&nbsp; -20</td>
+                        <td class="text-center">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="green" viewBox="0 0 16 16">
+                                        <path d="M13.485 1.929a1 1 0 0 1 .086 1.414l-7.071 8a1 1 0 0 1-1.497 0l-3.536-4a1 1 0 1 1 1.497-1.328L6 8.586l6.536-7.414a1 1 0 0 1 .949-.243z"></path>
+                                    </svg>
+                        </td>
+                        <td class="text-center">
+اویل پمپ زانتیا 21 دندانه                        </td>
+                        <td class="text-center">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="green" viewBox="0 0 16 16">
+                                        <path d="M13.485 1.929a1 1 0 0 1 .086 1.414l-7.071 8a1 1 0 0 1-1.497 0l-3.536-4a1 1 0 1 1 1.497-1.328L6 8.586l6.536-7.414a1 1 0 0 1 .949-.243z"></path>
+                                    </svg>
+                        </td>
+                        <td class="text-center">
+8                        </td>
+                        <td class="text-center">
+0                        </td>
+                        <td class="text-center">
+12,175,000                        </td>
+
+                <td class="text-center">
+                    <a class="btn btn-sm btn-primary" href="/AdminPanel/SubProduct/Edit/c69f283e-17eb-4b34-8f1e-ab20a7375bdf">
+                        <i class="fa fa-edit"></i>
+                    </a>
+
+                    <a class="btn btn-sm btn-danger" href="/AdminPanel/SubProduct/Delete/c69f283e-17eb-4b34-8f1e-ab20a7375bdf" onclick="return confirm('آیا از حذف این رکورد مطمئن هستید؟');">
+                        <i class="fa fa-trash"></i>
+                    </a>
+
+
+                </td>
+            </tr>
+            <tr data-id="0115e338-e26f-4065-9695-f504dd565171">
+                    <td><i class="fa fa-bars drag-handle"></i> &nbsp;&nbsp; -40</td>
+                        <td class="text-center">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="green" viewBox="0 0 16 16">
+                                        <path d="M13.485 1.929a1 1 0 0 1 .086 1.414l-7.071 8a1 1 0 0 1-1.497 0l-3.536-4a1 1 0 1 1 1.497-1.328L6 8.586l6.536-7.414a1 1 0 0 1 .949-.243z"></path>
+                                    </svg>
+                        </td>
+                        <td class="text-center">
+اویل پمپ سمند EF7                        </td>
+                        <td class="text-center">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="red" viewBox="0 0 16 16">
+                                        <path d="M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708z"></path>
+                                    </svg>
+                        </td>
+                        <td class="text-center">
+16                        </td>
+                        <td class="text-center">
+0                        </td>
+                        <td class="text-center">
+10,930,000                        </td>
+
+                <td class="text-center">
+                    <a class="btn btn-sm btn-primary" href="/AdminPanel/SubProduct/Edit/0115e338-e26f-4065-9695-f504dd565171">
+                        <i class="fa fa-edit"></i>
+                    </a>
+
+                    <a class="btn btn-sm btn-danger" href="/AdminPanel/SubProduct/Delete/0115e338-e26f-4065-9695-f504dd565171" onclick="return confirm('آیا از حذف این رکورد مطمئن هستید؟');">
+                        <i class="fa fa-trash"></i>
+                    </a>
+
+
+                </td>
+            </tr>
+            <tr data-id="05d206c5-f565-4750-919b-589bb978ba0d">
+                    <td><i class="fa fa-bars drag-handle"></i> &nbsp;&nbsp; -50</td>
+                        <td class="text-center">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="green" viewBox="0 0 16 16">
+                                        <path d="M13.485 1.929a1 1 0 0 1 .086 1.414l-7.071 8a1 1 0 0 1-1.497 0l-3.536-4a1 1 0 1 1 1.497-1.328L6 8.586l6.536-7.414a1 1 0 0 1 .949-.243z"></path>
+                                    </svg>
+                        </td>
+                        <td class="text-center">
+اویل پمپ 206 تیپ 5 (21 دندانه)                        </td>
+                        <td class="text-center">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="green" viewBox="0 0 16 16">
+                                        <path d="M13.485 1.929a1 1 0 0 1 .086 1.414l-7.071 8a1 1 0 0 1-1.497 0l-3.536-4a1 1 0 1 1 1.497-1.328L6 8.586l6.536-7.414a1 1 0 0 1 .949-.243z"></path>
+                                    </svg>
+                        </td>
+                        <td class="text-center">
+8                        </td>
+                        <td class="text-center">
+0                        </td>
+                        <td class="text-center">
+11,300,000                        </td>
+
+                <td class="text-center">
+                    <a class="btn btn-sm btn-primary" href="/AdminPanel/SubProduct/Edit/05d206c5-f565-4750-919b-589bb978ba0d">
+                        <i class="fa fa-edit"></i>
+                    </a>
+
+                    <a class="btn btn-sm btn-danger" href="/AdminPanel/SubProduct/Delete/05d206c5-f565-4750-919b-589bb978ba0d" onclick="return confirm('آیا از حذف این رکورد مطمئن هستید؟');">
+                        <i class="fa fa-trash"></i>
+                    </a>
+
+
+                </td>
+            </tr>
+            <tr data-id="77849815-79e1-4a3b-a651-0e15ed39b4f2">
+                    <td><i class="fa fa-bars drag-handle"></i> &nbsp;&nbsp; -60</td>
+                        <td class="text-center">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="green" viewBox="0 0 16 16">
+                                        <path d="M13.485 1.929a1 1 0 0 1 .086 1.414l-7.071 8a1 1 0 0 1-1.497 0l-3.536-4a1 1 0 1 1 1.497-1.328L6 8.586l6.536-7.414a1 1 0 0 1 .949-.243z"></path>
+                                    </svg>
+                        </td>
+                        <td class="text-center">
+اویل پمپ 206 تیپ 3 (29 دندانه)                        </td>
+                        <td class="text-center">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="green" viewBox="0 0 16 16">
+                                        <path d="M13.485 1.929a1 1 0 0 1 .086 1.414l-7.071 8a1 1 0 0 1-1.497 0l-3.536-4a1 1 0 1 1 1.497-1.328L6 8.586l6.536-7.414a1 1 0 0 1 .949-.243z"></path>
+                                    </svg>
+                        </td>
+                        <td class="text-center">
+8                        </td>
+                        <td class="text-center">
+0                        </td>
+                        <td class="text-center">
+10,990,000                        </td>
+
+                <td class="text-center">
+                    <a class="btn btn-sm btn-primary" href="/AdminPanel/SubProduct/Edit/77849815-79e1-4a3b-a651-0e15ed39b4f2">
+                        <i class="fa fa-edit"></i>
+                    </a>
+
+                    <a class="btn btn-sm btn-danger" href="/AdminPanel/SubProduct/Delete/77849815-79e1-4a3b-a651-0e15ed39b4f2" onclick="return confirm('آیا از حذف این رکورد مطمئن هستید؟');">
+                        <i class="fa fa-trash"></i>
+                    </a>
+
+
+                </td>
+            </tr>
+            <tr data-id="4b8d2a55-af31-4004-87e8-db3f1014ebb9">
+                    <td><i class="fa fa-bars drag-handle"></i> &nbsp;&nbsp; -70</td>
+                        <td class="text-center">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="green" viewBox="0 0 16 16">
+                                        <path d="M13.485 1.929a1 1 0 0 1 .086 1.414l-7.071 8a1 1 0 0 1-1.497 0l-3.536-4a1 1 0 1 1 1.497-1.328L6 8.586l6.536-7.414a1 1 0 0 1 .949-.243z"></path>
+                                    </svg>
+                        </td>
+                        <td class="text-center">
+اویل پمپ 206 تیپ 2 (21 دندانه)                        </td>
+                        <td class="text-center">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="green" viewBox="0 0 16 16">
+                                        <path d="M13.485 1.929a1 1 0 0 1 .086 1.414l-7.071 8a1 1 0 0 1-1.497 0l-3.536-4a1 1 0 1 1 1.497-1.328L6 8.586l6.536-7.414a1 1 0 0 1 .949-.243z"></path>
+                                    </svg>
+                        </td>
+                        <td class="text-center">
+8                        </td>
+                        <td class="text-center">
+0                        </td>
+                        <td class="text-center">
+10,990,000                        </td>
+
+                <td class="text-center">
+                    <a class="btn btn-sm btn-primary" href="/AdminPanel/SubProduct/Edit/4b8d2a55-af31-4004-87e8-db3f1014ebb9">
+                        <i class="fa fa-edit"></i>
+                    </a>
+
+                    <a class="btn btn-sm btn-danger" href="/AdminPanel/SubProduct/Delete/4b8d2a55-af31-4004-87e8-db3f1014ebb9" onclick="return confirm('آیا از حذف این رکورد مطمئن هستید؟');">
+                        <i class="fa fa-trash"></i>
+                    </a>
+
+
+                </td>
+            </tr>
+            <tr data-id="18d410a7-770e-4ead-b4b2-b5f1953260cc">
+                    <td><i class="fa fa-bars drag-handle"></i> &nbsp;&nbsp; -80</td>
+                        <td class="text-center">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="green" viewBox="0 0 16 16">
+                                        <path d="M13.485 1.929a1 1 0 0 1 .086 1.414l-7.071 8a1 1 0 0 1-1.497 0l-3.536-4a1 1 0 1 1 1.497-1.328L6 8.586l6.536-7.414a1 1 0 0 1 .949-.243z"></path>
+                                    </svg>
+                        </td>
+                        <td class="text-center">
+اویل پمپ پژو 405 xu7                        </td>
+                        <td class="text-center">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="green" viewBox="0 0 16 16">
+                                        <path d="M13.485 1.929a1 1 0 0 1 .086 1.414l-7.071 8a1 1 0 0 1-1.497 0l-3.536-4a1 1 0 1 1 1.497-1.328L6 8.586l6.536-7.414a1 1 0 0 1 .949-.243z"></path>
+                                    </svg>
+                        </td>
+                        <td class="text-center">
+8                        </td>
+                        <td class="text-center">
+0                        </td>
+                        <td class="text-center">
+11,610,000                        </td>
+
+                <td class="text-center">
+                    <a class="btn btn-sm btn-primary" href="/AdminPanel/SubProduct/Edit/18d410a7-770e-4ead-b4b2-b5f1953260cc">
+                        <i class="fa fa-edit"></i>
+                    </a>
+
+                    <a class="btn btn-sm btn-danger" href="/AdminPanel/SubProduct/Delete/18d410a7-770e-4ead-b4b2-b5f1953260cc" onclick="return confirm('آیا از حذف این رکورد مطمئن هستید؟');">
+                        <i class="fa fa-trash"></i>
+                    </a>
+
+
+                </td>
+            </tr>
+            <tr data-id="de54133f-fc5d-4d4f-a99c-0e1d44e5cceb">
+                    <td><i class="fa fa-bars drag-handle"></i> &nbsp;&nbsp; -85</td>
+                        <td class="text-center">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="green" viewBox="0 0 16 16">
+                                        <path d="M13.485 1.929a1 1 0 0 1 .086 1.414l-7.071 8a1 1 0 0 1-1.497 0l-3.536-4a1 1 0 1 1 1.497-1.328L6 8.586l6.536-7.414a1 1 0 0 1 .949-.243z"></path>
+                                    </svg>
+                        </td>
+                        <td class="text-center">
+اویل پمپ تیبا - پراید جدید                        </td>
+                        <td class="text-center">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="green" viewBox="0 0 16 16">
+                                        <path d="M13.485 1.929a1 1 0 0 1 .086 1.414l-7.071 8a1 1 0 0 1-1.497 0l-3.536-4a1 1 0 1 1 1.497-1.328L6 8.586l6.536-7.414a1 1 0 0 1 .949-.243z"></path>
+                                    </svg>
+                        </td>
+                        <td class="text-center">
+16                        </td>
+                        <td class="text-center">
+0                        </td>
+                        <td class="text-center">
+9,122,000                        </td>
+
+                <td class="text-center">
+                    <a class="btn btn-sm btn-primary" href="/AdminPanel/SubProduct/Edit/de54133f-fc5d-4d4f-a99c-0e1d44e5cceb">
+                        <i class="fa fa-edit"></i>
+                    </a>
+
+                    <a class="btn btn-sm btn-danger" href="/AdminPanel/SubProduct/Delete/de54133f-fc5d-4d4f-a99c-0e1d44e5cceb" onclick="return confirm('آیا از حذف این رکورد مطمئن هستید؟');">
+                        <i class="fa fa-trash"></i>
+                    </a>
+
+
+                </td>
+            </tr>
+            <tr data-id="79bc7d61-a865-487a-bf36-196baf7898cb">
+                    <td><i class="fa fa-bars drag-handle"></i> &nbsp;&nbsp; -90</td>
+                        <td class="text-center">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="green" viewBox="0 0 16 16">
+                                        <path d="M13.485 1.929a1 1 0 0 1 .086 1.414l-7.071 8a1 1 0 0 1-1.497 0l-3.536-4a1 1 0 1 1 1.497-1.328L6 8.586l6.536-7.414a1 1 0 0 1 .949-.243z"></path>
+                                    </svg>
+                        </td>
+                        <td class="text-center">
+اویل پمپ پراید قدیم                        </td>
+                        <td class="text-center">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="green" viewBox="0 0 16 16">
+                                        <path d="M13.485 1.929a1 1 0 0 1 .086 1.414l-7.071 8a1 1 0 0 1-1.497 0l-3.536-4a1 1 0 1 1 1.497-1.328L6 8.586l6.536-7.414a1 1 0 0 1 .949-.243z"></path>
+                                    </svg>
+                        </td>
+                        <td class="text-center">
+16                        </td>
+                        <td class="text-center">
+0                        </td>
+                        <td class="text-center">
+9,050,000                        </td>
+
+                <td class="text-center">
+                    <a class="btn btn-sm btn-primary" href="/AdminPanel/SubProduct/Edit/79bc7d61-a865-487a-bf36-196baf7898cb">
+                        <i class="fa fa-edit"></i>
+                    </a>
+
+                    <a class="btn btn-sm btn-danger" href="/AdminPanel/SubProduct/Delete/79bc7d61-a865-487a-bf36-196baf7898cb" onclick="return confirm('آیا از حذف این رکورد مطمئن هستید؟');">
+                        <i class="fa fa-trash"></i>
+                    </a>
+
+
+                </td>
+            </tr>
+            <tr data-id="8612ac03-968b-4e82-87fe-286018693eee">
+                    <td><i class="fa fa-bars drag-handle"></i> &nbsp;&nbsp; -95</td>
+                        <td class="text-center">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="green" viewBox="0 0 16 16">
+                                        <path d="M13.485 1.929a1 1 0 0 1 .086 1.414l-7.071 8a1 1 0 0 1-1.497 0l-3.536-4a1 1 0 1 1 1.497-1.328L6 8.586l6.536-7.414a1 1 0 0 1 .949-.243z"></path>
+                                    </svg>
+                        </td>
+                        <td class="text-center">
+اویل پمپ پیکان کاربراتور                        </td>
+                        <td class="text-center">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="green" viewBox="0 0 16 16">
+                                        <path d="M13.485 1.929a1 1 0 0 1 .086 1.414l-7.071 8a1 1 0 0 1-1.497 0l-3.536-4a1 1 0 1 1 1.497-1.328L6 8.586l6.536-7.414a1 1 0 0 1 .949-.243z"></path>
+                                    </svg>
+                        </td>
+                        <td class="text-center">
+6                        </td>
+                        <td class="text-center">
+0                        </td>
+                        <td class="text-center">
+9,502,000                        </td>
+
+                <td class="text-center">
+                    <a class="btn btn-sm btn-primary" href="/AdminPanel/SubProduct/Edit/8612ac03-968b-4e82-87fe-286018693eee">
+                        <i class="fa fa-edit"></i>
+                    </a>
+
+                    <a class="btn btn-sm btn-danger" href="/AdminPanel/SubProduct/Delete/8612ac03-968b-4e82-87fe-286018693eee" onclick="return confirm('آیا از حذف این رکورد مطمئن هستید؟');">
+                        <i class="fa fa-trash"></i>
+                    </a>
+
+
+                </td>
+            </tr>
+            <tr data-id="a56d6cd6-f6aa-46fa-91d1-7499cd3eabfb">
+                    <td><i class="fa fa-bars drag-handle"></i> &nbsp;&nbsp; -40000</td>
+                        <td class="text-center">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="green" viewBox="0 0 16 16">
+                                        <path d="M13.485 1.929a1 1 0 0 1 .086 1.414l-7.071 8a1 1 0 0 1-1.497 0l-3.536-4a1 1 0 1 1 1.497-1.328L6 8.586l6.536-7.414a1 1 0 0 1 .949-.243z"></path>
+                                    </svg>
+                        </td>
+                        <td class="text-center">
+پمپ هیدرولیک ال 90                        </td>
+                        <td class="text-center">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="green" viewBox="0 0 16 16">
+                                        <path d="M13.485 1.929a1 1 0 0 1 .086 1.414l-7.071 8a1 1 0 0 1-1.497 0l-3.536-4a1 1 0 1 1 1.497-1.328L6 8.586l6.536-7.414a1 1 0 0 1 .949-.243z"></path>
+                                    </svg>
+                        </td>
+                        <td class="text-center">
+8                        </td>
+                        <td class="text-center">
+0                        </td>
+                        <td class="text-center">
+42,170,000                        </td>
+
+                <td class="text-center">
+                    <a class="btn btn-sm btn-primary" href="/AdminPanel/SubProduct/Edit/a56d6cd6-f6aa-46fa-91d1-7499cd3eabfb">
+                        <i class="fa fa-edit"></i>
+                    </a>
+
+                    <a class="btn btn-sm btn-danger" href="/AdminPanel/SubProduct/Delete/a56d6cd6-f6aa-46fa-91d1-7499cd3eabfb" onclick="return confirm('آیا از حذف این رکورد مطمئن هستید؟');">
+                        <i class="fa fa-trash"></i>
+                    </a>
+
+
+                </td>
+            </tr>
+            <tr data-id="d6749929-44da-4c31-b6d1-2cff55ce4a33">
+                    <td><i class="fa fa-bars drag-handle"></i> &nbsp;&nbsp; -42000</td>
+                        <td class="text-center">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="green" viewBox="0 0 16 16">
+                                        <path d="M13.485 1.929a1 1 0 0 1 .086 1.414l-7.071 8a1 1 0 0 1-1.497 0l-3.536-4a1 1 0 1 1 1.497-1.328L6 8.586l6.536-7.414a1 1 0 0 1 .949-.243z"></path>
+                                    </svg>
+                        </td>
+                        <td class="text-center">
+پمپ هیدرولیک 206 ( جدید )                        </td>
+                        <td class="text-center">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="green" viewBox="0 0 16 16">
+                                        <path d="M13.485 1.929a1 1 0 0 1 .086 1.414l-7.071 8a1 1 0 0 1-1.497 0l-3.536-4a1 1 0 1 1 1.497-1.328L6 8.586l6.536-7.414a1 1 0 0 1 .949-.243z"></path>
+                                    </svg>
+                        </td>
+                        <td class="text-center">
+4                        </td>
+                        <td class="text-center">
+0                        </td>
+                        <td class="text-center">
+49,700,000                        </td>
+
+                <td class="text-center">
+                    <a class="btn btn-sm btn-primary" href="/AdminPanel/SubProduct/Edit/d6749929-44da-4c31-b6d1-2cff55ce4a33">
+                        <i class="fa fa-edit"></i>
+                    </a>
+
+                    <a class="btn btn-sm btn-danger" href="/AdminPanel/SubProduct/Delete/d6749929-44da-4c31-b6d1-2cff55ce4a33" onclick="return confirm('آیا از حذف این رکورد مطمئن هستید؟');">
+                        <i class="fa fa-trash"></i>
+                    </a>
+
+
+                </td>
+            </tr>
+            <tr data-id="761bd6f4-2896-4167-9d3a-3af3bd8685f5">
+                    <td><i class="fa fa-bars drag-handle"></i> &nbsp;&nbsp; -43000</td>
+                        <td class="text-center">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="green" viewBox="0 0 16 16">
+                                        <path d="M13.485 1.929a1 1 0 0 1 .086 1.414l-7.071 8a1 1 0 0 1-1.497 0l-3.536-4a1 1 0 1 1 1.497-1.328L6 8.586l6.536-7.414a1 1 0 0 1 .949-.243z"></path>
+                                    </svg>
+                        </td>
+                        <td class="text-center">
+پمپ هیدرولیک 206 ( قدیم )                        </td>
+                        <td class="text-center">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="green" viewBox="0 0 16 16">
+                                        <path d="M13.485 1.929a1 1 0 0 1 .086 1.414l-7.071 8a1 1 0 0 1-1.497 0l-3.536-4a1 1 0 1 1 1.497-1.328L6 8.586l6.536-7.414a1 1 0 0 1 .949-.243z"></path>
+                                    </svg>
+                        </td>
+                        <td class="text-center">
+4                        </td>
+                        <td class="text-center">
+0                        </td>
+                        <td class="text-center">
+49,700,000                        </td>
+
+                <td class="text-center">
+                    <a class="btn btn-sm btn-primary" href="/AdminPanel/SubProduct/Edit/761bd6f4-2896-4167-9d3a-3af3bd8685f5">
+                        <i class="fa fa-edit"></i>
+                    </a>
+
+                    <a class="btn btn-sm btn-danger" href="/AdminPanel/SubProduct/Delete/761bd6f4-2896-4167-9d3a-3af3bd8685f5" onclick="return confirm('آیا از حذف این رکورد مطمئن هستید؟');">
+                        <i class="fa fa-trash"></i>
+                    </a>
+
+
+                </td>
+            </tr>
+            <tr data-id="72cf224b-4262-439f-8887-1dae8047d5a1">
+                    <td><i class="fa fa-bars drag-handle"></i> &nbsp;&nbsp; -44000</td>
+                        <td class="text-center">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="green" viewBox="0 0 16 16">
+                                        <path d="M13.485 1.929a1 1 0 0 1 .086 1.414l-7.071 8a1 1 0 0 1-1.497 0l-3.536-4a1 1 0 1 1 1.497-1.328L6 8.586l6.536-7.414a1 1 0 0 1 .949-.243z"></path>
+                                    </svg>
+                        </td>
+                        <td class="text-center">
+پمپ هیدرولیک سمند ( قدیم )                        </td>
+                        <td class="text-center">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="green" viewBox="0 0 16 16">
+                                        <path d="M13.485 1.929a1 1 0 0 1 .086 1.414l-7.071 8a1 1 0 0 1-1.497 0l-3.536-4a1 1 0 1 1 1.497-1.328L6 8.586l6.536-7.414a1 1 0 0 1 .949-.243z"></path>
+                                    </svg>
+                        </td>
+                        <td class="text-center">
+8                        </td>
+                        <td class="text-center">
+0                        </td>
+                        <td class="text-center">
+45,182,000                        </td>
+
+                <td class="text-center">
+                    <a class="btn btn-sm btn-primary" href="/AdminPanel/SubProduct/Edit/72cf224b-4262-439f-8887-1dae8047d5a1">
+                        <i class="fa fa-edit"></i>
+                    </a>
+
+                    <a class="btn btn-sm btn-danger" href="/AdminPanel/SubProduct/Delete/72cf224b-4262-439f-8887-1dae8047d5a1" onclick="return confirm('آیا از حذف این رکورد مطمئن هستید؟');">
+                        <i class="fa fa-trash"></i>
+                    </a>
+
+
+                </td>
+            </tr>
+            <tr data-id="46fd0157-5bd0-4b44-a88e-d957d8856cbd">
+                    <td><i class="fa fa-bars drag-handle"></i> &nbsp;&nbsp; -44000</td>
+                        <td class="text-center">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="green" viewBox="0 0 16 16">
+                                        <path d="M13.485 1.929a1 1 0 0 1 .086 1.414l-7.071 8a1 1 0 0 1-1.497 0l-3.536-4a1 1 0 1 1 1.497-1.328L6 8.586l6.536-7.414a1 1 0 0 1 .949-.243z"></path>
+                                    </svg>
+                        </td>
+                        <td class="text-center">
+پمپ هیدرولیک سمند EF7                        </td>
+                        <td class="text-center">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="green" viewBox="0 0 16 16">
+                                        <path d="M13.485 1.929a1 1 0 0 1 .086 1.414l-7.071 8a1 1 0 0 1-1.497 0l-3.536-4a1 1 0 1 1 1.497-1.328L6 8.586l6.536-7.414a1 1 0 0 1 .949-.243z"></path>
+                                    </svg>
+                        </td>
+                        <td class="text-center">
+8                        </td>
+                        <td class="text-center">
+0                        </td>
+                        <td class="text-center">
+47,440,000                        </td>
+
+                <td class="text-center">
+                    <a class="btn btn-sm btn-primary" href="/AdminPanel/SubProduct/Edit/46fd0157-5bd0-4b44-a88e-d957d8856cbd">
+                        <i class="fa fa-edit"></i>
+                    </a>
+
+                    <a class="btn btn-sm btn-danger" href="/AdminPanel/SubProduct/Delete/46fd0157-5bd0-4b44-a88e-d957d8856cbd" onclick="return confirm('آیا از حذف این رکورد مطمئن هستید؟');">
+                        <i class="fa fa-trash"></i>
+                    </a>
+
+
+                </td>
+            </tr>
+            <tr data-id="e73dd9fb-9d71-4883-83cd-413139bb3af3">
+                    <td><i class="fa fa-bars drag-handle"></i> &nbsp;&nbsp; -45000</td>
+                        <td class="text-center">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="green" viewBox="0 0 16 16">
+                                        <path d="M13.485 1.929a1 1 0 0 1 .086 1.414l-7.071 8a1 1 0 0 1-1.497 0l-3.536-4a1 1 0 1 1 1.497-1.328L6 8.586l6.536-7.414a1 1 0 0 1 .949-.243z"></path>
+                                    </svg>
+                        </td>
+                        <td class="text-center">
+پمپ هیدرولیک سمند ( جدید )                        </td>
+                        <td class="text-center">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="green" viewBox="0 0 16 16">
+                                        <path d="M13.485 1.929a1 1 0 0 1 .086 1.414l-7.071 8a1 1 0 0 1-1.497 0l-3.536-4a1 1 0 1 1 1.497-1.328L6 8.586l6.536-7.414a1 1 0 0 1 .949-.243z"></path>
+                                    </svg>
+                        </td>
+                        <td class="text-center">
+8                        </td>
+                        <td class="text-center">
+0                        </td>
+                        <td class="text-center">
+45,182,000                        </td>
+
+                <td class="text-center">
+                    <a class="btn btn-sm btn-primary" href="/AdminPanel/SubProduct/Edit/e73dd9fb-9d71-4883-83cd-413139bb3af3">
+                        <i class="fa fa-edit"></i>
+                    </a>
+
+                    <a class="btn btn-sm btn-danger" href="/AdminPanel/SubProduct/Delete/e73dd9fb-9d71-4883-83cd-413139bb3af3" onclick="return confirm('آیا از حذف این رکورد مطمئن هستید؟');">
+                        <i class="fa fa-trash"></i>
+                    </a>
+
+
+                </td>
+            </tr>
+            <tr data-id="f605d35b-6c0f-4f63-a4e7-46655d9fd0dd">
+                    <td><i class="fa fa-bars drag-handle"></i> &nbsp;&nbsp; -47000</td>
+                        <td class="text-center">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="green" viewBox="0 0 16 16">
+                                        <path d="M13.485 1.929a1 1 0 0 1 .086 1.414l-7.071 8a1 1 0 0 1-1.497 0l-3.536-4a1 1 0 1 1 1.497-1.328L6 8.586l6.536-7.414a1 1 0 0 1 .949-.243z"></path>
+                                    </svg>
+                        </td>
+                        <td class="text-center">
+پمپ هیدرولیک پژو 405 ( جدید )                        </td>
+                        <td class="text-center">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="green" viewBox="0 0 16 16">
+                                        <path d="M13.485 1.929a1 1 0 0 1 .086 1.414l-7.071 8a1 1 0 0 1-1.497 0l-3.536-4a1 1 0 1 1 1.497-1.328L6 8.586l6.536-7.414a1 1 0 0 1 .949-.243z"></path>
+                                    </svg>
+                        </td>
+                        <td class="text-center">
+8                        </td>
+                        <td class="text-center">
+0                        </td>
+                        <td class="text-center">
+45,182,000                        </td>
+
+                <td class="text-center">
+                    <a class="btn btn-sm btn-primary" href="/AdminPanel/SubProduct/Edit/f605d35b-6c0f-4f63-a4e7-46655d9fd0dd">
+                        <i class="fa fa-edit"></i>
+                    </a>
+
+                    <a class="btn btn-sm btn-danger" href="/AdminPanel/SubProduct/Delete/f605d35b-6c0f-4f63-a4e7-46655d9fd0dd" onclick="return confirm('آیا از حذف این رکورد مطمئن هستید؟');">
+                        <i class="fa fa-trash"></i>
+                    </a>
+
+
+                </td>
+            </tr>
+            <tr data-id="d1f08e49-1da7-4654-8abe-f127f251df3a">
+                    <td><i class="fa fa-bars drag-handle"></i> &nbsp;&nbsp; -48000</td>
+                        <td class="text-center">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="green" viewBox="0 0 16 16">
+                                        <path d="M13.485 1.929a1 1 0 0 1 .086 1.414l-7.071 8a1 1 0 0 1-1.497 0l-3.536-4a1 1 0 1 1 1.497-1.328L6 8.586l6.536-7.414a1 1 0 0 1 .949-.243z"></path>
+                                    </svg>
+                        </td>
+                        <td class="text-center">
+پمپ هیدرولیک پژو 405 ( قدیم )                        </td>
+                        <td class="text-center">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="green" viewBox="0 0 16 16">
+                                        <path d="M13.485 1.929a1 1 0 0 1 .086 1.414l-7.071 8a1 1 0 0 1-1.497 0l-3.536-4a1 1 0 1 1 1.497-1.328L6 8.586l6.536-7.414a1 1 0 0 1 .949-.243z"></path>
+                                    </svg>
+                        </td>
+                        <td class="text-center">
+8                        </td>
+                        <td class="text-center">
+0                        </td>
+                        <td class="text-center">
+45,182,000                        </td>
+
+                <td class="text-center">
+                    <a class="btn btn-sm btn-primary" href="/AdminPanel/SubProduct/Edit/d1f08e49-1da7-4654-8abe-f127f251df3a">
+                        <i class="fa fa-edit"></i>
+                    </a>
+
+                    <a class="btn btn-sm btn-danger" href="/AdminPanel/SubProduct/Delete/d1f08e49-1da7-4654-8abe-f127f251df3a" onclick="return confirm('آیا از حذف این رکورد مطمئن هستید؟');">
+                        <i class="fa fa-trash"></i>
+                    </a>
+
+
+                </td>
+            </tr>
+            <tr data-id="028e8ad0-21f2-4c5d-8557-15aa86ee9160">
+                    <td><i class="fa fa-bars drag-handle"></i> &nbsp;&nbsp; -49000</td>
+                        <td class="text-center">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="green" viewBox="0 0 16 16">
+                                        <path d="M13.485 1.929a1 1 0 0 1 .086 1.414l-7.071 8a1 1 0 0 1-1.497 0l-3.536-4a1 1 0 1 1 1.497-1.328L6 8.586l6.536-7.414a1 1 0 0 1 .949-.243z"></path>
+                                    </svg>
+                        </td>
+                        <td class="text-center">
+پمپ هیدرولیک پراید                        </td>
+                        <td class="text-center">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="green" viewBox="0 0 16 16">
+                                        <path d="M13.485 1.929a1 1 0 0 1 .086 1.414l-7.071 8a1 1 0 0 1-1.497 0l-3.536-4a1 1 0 1 1 1.497-1.328L6 8.586l6.536-7.414a1 1 0 0 1 .949-.243z"></path>
+                                    </svg>
+                        </td>
+                        <td class="text-center">
+4                        </td>
+                        <td class="text-center">
+0                        </td>
+                        <td class="text-center">
+47,000,000                        </td>
+
+                <td class="text-center">
+                    <a class="btn btn-sm btn-primary" href="/AdminPanel/SubProduct/Edit/028e8ad0-21f2-4c5d-8557-15aa86ee9160">
+                        <i class="fa fa-edit"></i>
+                    </a>
+
+                    <a class="btn btn-sm btn-danger" href="/AdminPanel/SubProduct/Delete/028e8ad0-21f2-4c5d-8557-15aa86ee9160" onclick="return confirm('آیا از حذف این رکورد مطمئن هستید؟');">
+                        <i class="fa fa-trash"></i>
+                    </a>
+
+
+                </td>
+            </tr>
+            <tr data-id="71dd548d-ba41-417b-bd7c-730ed67003ca">
+                    <td><i class="fa fa-bars drag-handle"></i> &nbsp;&nbsp; -50000</td>
+                        <td class="text-center">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="green" viewBox="0 0 16 16">
+                                        <path d="M13.485 1.929a1 1 0 0 1 .086 1.414l-7.071 8a1 1 0 0 1-1.497 0l-3.536-4a1 1 0 1 1 1.497-1.328L6 8.586l6.536-7.414a1 1 0 0 1 .949-.243z"></path>
+                                    </svg>
+                        </td>
+                        <td class="text-center">
+پمپ هیدرولیک پیکان / پژو آردی                        </td>
+                        <td class="text-center">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="green" viewBox="0 0 16 16">
+                                        <path d="M13.485 1.929a1 1 0 0 1 .086 1.414l-7.071 8a1 1 0 0 1-1.497 0l-3.536-4a1 1 0 1 1 1.497-1.328L6 8.586l6.536-7.414a1 1 0 0 1 .949-.243z"></path>
+                                    </svg>
+                        </td>
+                        <td class="text-center">
+4                        </td>
+                        <td class="text-center">
+0                        </td>
+                        <td class="text-center">
+49,700,000                        </td>
+
+                <td class="text-center">
+                    <a class="btn btn-sm btn-primary" href="/AdminPanel/SubProduct/Edit/71dd548d-ba41-417b-bd7c-730ed67003ca">
+                        <i class="fa fa-edit"></i>
+                    </a>
+
+                    <a class="btn btn-sm btn-danger" href="/AdminPanel/SubProduct/Delete/71dd548d-ba41-417b-bd7c-730ed67003ca" onclick="return confirm('آیا از حذف این رکورد مطمئن هستید؟');">
+                        <i class="fa fa-trash"></i>
+                    </a>
+
+
+                </td>
+            </tr>
+    </tbody>
+</table>
+
+<script>
+    // گرفتن نام کنترلر از مدل Razor
+    const controllerName = "SubProduct";
+    const areaName = "AdminPanel";
+
+    // فعال‌سازی Drag & Drop
+    let sortable = new Sortable(document.querySelector("#crudTable tbody"), {
+        handle: ".drag-handle",
+        animation: 150
+    });
+
+    // ذخیره ترتیب
+    $("#saveOrderBtn").on("click", function () {
+        let order = [];
+        $("#crudTable tbody tr").each(function (index) {
+            order.push({ id: $(this).data("id"), order: index + 1 });
+        });
+
+        // آدرس جنریک بر اساس کنترلر و area
+        let url = "/" + (areaName ? areaName + "/" : "") + controllerName + "/UpdateOrder";
+
+        $.ajax({
+            url: url,
+            type: "POST",
+            contentType: "application/json",
+            data: JSON.stringify(order),
+            success: function () {
+                let reloadUrl = "/" + (areaName ? areaName + "/" : "") + controllerName + (controllerName != "Product" ? "/List" : "/Groups") ;
+                window.location.href = reloadUrl;
+            },
+            error: function () {
+                alert("خطا در ذخیره ترتیب");
+            }
+        });
+    });
+
+    // وقتی روی دکمه upload کلیک میشه، categoryId رو در hidden ست کن
+    $(document).on("click", ".upload-excel-btn", function () {
+        // دو روش خواندن: data() یا attr() — برای اطمینان هردو را امتحان می‌کنیم
+        let categoryId = $(this).data("category");
+        if (!categoryId) categoryId = $(this).attr("data-category");
+
+        console.log("upload-excel-btn clicked, data-category:", categoryId);
+        $("#excelUploadForm input[name='categoryId']").val(categoryId || "");
+    });
+
+    // پاک‌سازی هنگام بستن modal تا مقدار قدیمی نپاید
+    $('#uploadExcelModal').on('hidden.bs.modal', function () {
+        $("#excelUploadForm input[name='categoryId']").val('');
+        $("#excelUploadForm input[name='file']").val(''); // پاک کردن فیلد فایل
+    });
+
+
+     $("#excelUploadForm").on("submit", function (e) {
+        e.preventDefault();
+
+        let formData = new FormData(this);
+
+        $.ajax({
+            url: "/AdminPanel/SubProduct/UploadProducts", // مسیر کنترلر
+            type: "POST",
+            data: formData,
+            processData: false, // جلوگیری از پردازش پیش‌فرض
+            contentType: false, // نوع محتوا رو خود مرورگر تعیین کنه
+            success: function (response) {
+                alert(response.message);
+                $("#uploadExcelModal").modal("hide");
+                let reloadUrl = "/AdminPanel/Product/Groups";
+                $("#crudTableContainer").load(reloadUrl);
+            },
+            error: function (xhr) {
+                let response = JSON.parse(xhr.responseText);
+                alert("❌ خطا: " + response.message);
+            }
+        });
+    });
+</script>
+
+        </div>
+    </div>
+</main>
+
+
+    </div>
+    
+
+    <!-- کانتینر Toast -->
+    <div id="toast-container"></div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.2/js/bootstrap.bundle.min.js"></script>
+
+</body></html>
