@@ -9,6 +9,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.13.2/jquery-ui.min.js"></script>
 
     <style>
+        /* CSS styles remain the same */
         * {
             margin: 0;
             padding: 0;
@@ -232,61 +233,79 @@
     <div class="wrapper">
         <!-- Sidebar -->
         <div class="sidebar">
-    <h5>مدیریت سایت</h5>
-    <a href="/AdminPanel/Dashboard/Index"><i class="fa fa-home"></i> صفحه اصلی</a>
-    <a href="/AdminPanel/News/List"><i class="fa fa-bullhorn"></i> اخبار</a>
-    <a href="/AdminPanel/Announcement/List"><i class="fa fa-bullhorn"></i> اطلاعیه‌ها</a>
-    <a href="/AdminPanel/Brand/List"><i class="fa fa-bullhorn"></i> برند</a>
-    <a href="/AdminPanel/Product/Groups"><i class="fa fa-box"></i> انبار کالا</a>
-    <a href="/AdminPanel/Agent/List"><i class="fa fa-users"></i> نمایندگی‌ها</a>
-    <a href="/AdminPanel/FrancoShopReports/SalesReport"><i class="fa fa-shopping-cart"></i> گزارش سفارشات</a>
-    <a href="/AdminPanel/Account/UserList"><i class="fa fa-shopping-cart"></i> کاربران سیستم</a>
-    <hr style="border-color: rgba(255,255,255,0.1);">
-    <a href="/Home/Index"><i class="fa fa-sign-in-alt"></i> ورود به سامانه اصلی</a>
-</div>
+            <h5>مدیریت سایت</h5>
+            <a href="/AdminPanel/Dashboard/Index"><i class="fa fa-home"></i> صفحه اصلی</a>
+            <a href="/AdminPanel/News/List"><i class="fa fa-bullhorn"></i> اخبار</a>
+            <a href="announcement_list.php"><i class="fa fa-bullhorn"></i> اطلاعیه‌ها</a>
+            <a href="/AdminPanel/Brand/List"><i class="fa fa-bullhorn"></i> برند</a>
+            <a href="/AdminPanel/Product/Groups"><i class="fa fa-box"></i> انبار کالا</a>
+            <a href="/AdminPanel/Agent/List"><i class="fa fa-users"></i> نمایندگی‌ها</a>
+            <a href="/AdminPanel/FrancoShopReports/SalesReport"><i class="fa fa-shopping-cart"></i> گزارش سفارشات</a>
+            <a href="/AdminPanel/Account/UserList"><i class="fa fa-shopping-cart"></i> کاربران سیستم</a>
+            <hr style="border-color: rgba(255,255,255,0.1);">
+            <a href="/Home/Index"><i class="fa fa-sign-in-alt"></i> ورود به سامانه اصلی</a>
+        </div>
 
 
         <!-- Main Content -->
-        
+        <main class="col-md-10 ms-sm-auto content">
+            <header class="d-flex justify-content-between align-items-center mb-3">
+                <h5>مدیریت اطلاعیه‌ها &gt; ثبت اطلاعیه</h5>
+                <a href="#" class="btn btn-danger">
+                    <i class="fa fa-sign-out-alt"></i> خروج
+                </a>
+            </header>
 
-<main class="col-md-10 ms-sm-auto content">
-    
-<header class="d-flex justify-content-between align-items-center mb-3">
-    <h5>مدیریت اخبار &gt; ثبت خبر</h5>
-<form action="/AdminPanel/Account/Logout" area="" method="post">            <button type="submit" class="btn btn-danger">
-                <i class="fa fa-sign-out-alt"></i> خروج
-            </button>
-<input name="__RequestVerificationToken" type="hidden" value="CfDJ8KYTGIkQdfxCtALZgV80tFeLNU7C1QqVcHQ0Dbsts47D4E6W5l_9RR0vna-F6kUAx5-vngG_A_sYN303ZZTI6WJK95gqJoiGFzewm4jeORW66LyvH5SMGOjQrIMM6rkZXbpzmdbK20i6JKNwazYUjRryFAENyIMHC7tbUZwa5jhkH9CR59c0HndboPVG0lSxDA"></form></header>
-
-
-    <div class="card p-4 mt-3">
-<form action="/AdminPanel/News/Create" class="card-body" method="post"><input name="__RequestVerificationToken" type="hidden" value="CfDJ8KYTGIkQdfxCtALZgV80tFeLNU7C1QqVcHQ0Dbsts47D4E6W5l_9RR0vna-F6kUAx5-vngG_A_sYN303ZZTI6WJK95gqJoiGFzewm4jeORW66LyvH5SMGOjQrIMM6rkZXbpzmdbK20i6JKNwazYUjRryFAENyIMHC7tbUZwa5jhkH9CR59c0HndboPVG0lSxDA">            
-            <div class="mb-3">
-                <label class="form-label" for="Title">عنوان</label>
-                <input class="form-control" data-val="true" data-val-required="The عنوان field is required." id="Title" name="Title" type="text" value="">
-                <span class="text-danger field-validation-valid" data-valmsg-for="Title" data-valmsg-replace="true"></span>
+            <div class="card p-4 mt-3">
+                <form action="announcement_create.php" class="card-body" method="post">
+                    <div class="row mb-3">
+                        <div class="col-md-3">
+                            <label class="form-label" for="release_date">تاریخ</label>
+                            <div class="input-group">
+                                <input class="form-control pwt-datepicker-input-element" id="announcementDate" name="release_date" type="text" value="">
+                                <span class="input-group-text"><i class="fa fa-calendar"></i></span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row mb-3">
+                        <div class="col-md-12">
+                            <label class="form-label" for="title">عنوان</label>
+                            <input class="form-control" id="title" name="title" type="text" value="">
+                        </div>
+                    </div>
+                    <div class="row mb-3">
+                        <label class="form-label" for="description">توضیحات</label>
+                        <textarea class="form-control" dir="rtl" id="description" name="description" rows="6" style="width:100% !important;"></textarea>
+                    </div>
+                    <div class="row mb-3">
+                        <div class="col-md-12">
+                            <input class="form-check-input" id="is-show" name="is_show" type="checkbox" value="1" checked>
+                            <label class="form-label" for="is-show">نمایش/عدم نمایش</label>
+                        </div>
+                    </div>
+                    <div class="d-flex">
+                        <button type="submit" class="btn btn-primary"><i class="fa fa-save"></i> ثبت</button>
+                        &nbsp;&nbsp;
+                        <a href="announcement_list.php" class="btn btn-warning">
+                            <i class="fa fa-times"></i> انصراف
+                        </a>
+                    </div>
+                </form>
             </div>
-            <div class="mb-3">
-                <label class="form-label" for="Description">شرح</label>
-                <textarea class="form-control" cols="50" data-val="true" data-val-required="The شرح field is required." id="Description" name="Description" rows="6"></textarea>
-                <span class="text-danger field-validation-valid" data-valmsg-for="Description" data-valmsg-replace="true"></span>
-            </div>
-            <div class="mb-3 form-check">
-                <input class="form-check-input" data-val="true" data-val-required="The نمایش/عدم نمایش field is required." id="is-show" name="IsShow" type="checkbox" value="true">
-                <label class="form-check-label" for="is-show">نمایش/عدم نمایش</label>
-            </div>
-            <button type="submit" class="btn btn-primary"><i class="fa fa-save"></i> ثبت</button>
-            <a href="/AdminPanel/News/List" class="btn btn-warning"><i class="fa fa-times"></i> انصراف</a>
-<input name="IsShow" type="hidden" value="false"></form>    </div>
-</main>
-
-
+        </main>
     </div>
-    
 
-    <!-- کانتینر Toast -->
-    <div id="toast-container"></div>
+    <script>
+        $(function () {
+            $("#announcementDate").persianDatepicker({
+                format: "YYYY/MM/DD",
+                autoClose: true,
+                calendarType: "persian",
+                initialValue: false
+            });
+        });
+    </script>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.2/js/bootstrap.bundle.min.js"></script>
-
-</body></html>
+</body>
+</html>

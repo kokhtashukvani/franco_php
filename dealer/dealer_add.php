@@ -9,6 +9,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.13.2/jquery-ui.min.js"></script>
 
     <style>
+        /* CSS styles remain the same */
         * {
             margin: 0;
             padding: 0;
@@ -232,94 +233,105 @@
     <div class="wrapper">
         <!-- Sidebar -->
         <div class="sidebar">
-    <h5>مدیریت سایت</h5>
-    <a href="/AdminPanel/Dashboard/Index"><i class="fa fa-home"></i> صفحه اصلی</a>
-    <a href="/AdminPanel/News/List"><i class="fa fa-bullhorn"></i> اخبار</a>
-    <a href="/AdminPanel/Announcement/List"><i class="fa fa-bullhorn"></i> اطلاعیه‌ها</a>
-    <a href="/AdminPanel/Brand/List"><i class="fa fa-bullhorn"></i> برند</a>
-    <a href="/AdminPanel/Product/Groups"><i class="fa fa-box"></i> انبار کالا</a>
-    <a href="/AdminPanel/Agent/List"><i class="fa fa-users"></i> نمایندگی‌ها</a>
-    <a href="/AdminPanel/FrancoShopReports/SalesReport"><i class="fa fa-shopping-cart"></i> گزارش سفارشات</a>
-    <a href="/AdminPanel/Account/UserList"><i class="fa fa-shopping-cart"></i> کاربران سیستم</a>
-    <hr style="border-color: rgba(255,255,255,0.1);">
-    <a href="/Home/Index"><i class="fa fa-sign-in-alt"></i> ورود به سامانه اصلی</a>
-</div>
+            <h5>مدیریت سایت</h5>
+            <a href="/AdminPanel/Dashboard/Index"><i class="fa fa-home"></i> صفحه اصلی</a>
+            <a href="../news/news_list.php"><i class="fa fa-bullhorn"></i> اخبار</a>
+            <a href="../Announcement/announcement_list.php"><i class="fa fa-bullhorn"></i> اطلاعیه‌ها</a>
+            <a href="../brand/brand_list.php"><i class="fa fa-bullhorn"></i> برند</a>
+            <a href="/AdminPanel/Product/Groups"><i class="fa fa-box"></i> انبار کالا</a>
+            <a href="dealer_list.php"><i class="fa fa-users"></i> نمایندگی‌ها</a>
+            <a href="../reports/reports.php"><i class="fa fa-shopping-cart"></i> گزارش سفارشات</a>
+            <a href="../admins/admin_list.php"><i class="fa fa-shopping-cart"></i> کاربران سیستم</a>
+            <hr style="border-color: rgba(255,255,255,0.1);">
+            <a href="/Home/Index"><i class="fa fa-sign-in-alt"></i> ورود به سامانه اصلی</a>
+        </div>
 
 
         <!-- Main Content -->
-        
+        <main class="col-md-10 ms-sm-auto content">
+            <header class="d-flex justify-content-between align-items-center mb-3">
+                <h5>مدیریت نمایندگی ها &gt; ثبت اطلاعات نماینده</h5>
+                <a href="#" class="btn btn-danger">
+                    <i class="fa fa-sign-out-alt"></i> خروج
+                </a>
+            </header>
 
-
-<main class="col-md-10 ms-sm-auto content">
-    <header>
-        <h5>ثبت کاربران سیستم</h5>
-    </header>
-    <div class="card p-4 mt-3">
-        <div class="col-md-12">
-
-        </div>
-        <div class="col-md-4">
-<form action="/AdminPanel/Account/Register" class="card-body" enctype="multipart/form-data" method="post">                
-                
-                <div class="form-group">
-                    <label class="form-label" for="FirstName">نام</label>
-                    <input class="form-control" data-val="true" data-val-required="The نام field is required." id="first-name" name="FirstName" type="text" value="">
-                    <br>
-                    <span class="text-danger field-validation-valid" data-valmsg-for="FirstName" data-valmsg-replace="true"></span>
-                </div>
-                <div class="form-group">
-                    <label class="form-label" for="LastName">نام خانوادگی</label>
-                    <input class="form-control" data-val="true" data-val-required="The نام خانوادگی field is required." id="last-name" name="LastName" type="text" value="">
-                    <br>
-                    <span class="text-danger field-validation-valid" data-valmsg-for="LastName" data-valmsg-replace="true"></span>
-                </div>
-                <div class="form-group">
-                    <label class="form-label" for="UserName">نام کاربری</label>
-                    <input class="form-control" data-val="true" data-val-required="The نام کاربری field is required." id="user-name" name="UserName" type="text" value="">
-                    <br>
-                    <span class="text-danger field-validation-valid" data-valmsg-for="UserName" data-valmsg-replace="true"></span>
-                </div>
-                <div class="form-group">
-                    <label class="form-label" for="Email">ایمیل</label>
-                    <input class="form-control" data-val="true" data-val-email="The ایمیل field is not a valid e-mail address." data-val-required="The ایمیل field is required." id="email" name="Email" type="text" value="">
-                    <br>
-                    <span class="text-danger field-validation-valid" data-valmsg-for="Email" data-valmsg-replace="true"></span>
-                </div>
-                <div class="form-group">
-                    <label class="form-label" for="Password">کلمه عبور</label>
-                    <input class="form-control" data-val="true" data-val-required="The کلمه عبور field is required." id="password" name="Password" type="password" value="">
-                    <br>
-                    <span class="text-danger field-validation-valid" data-valmsg-for="Password" data-valmsg-replace="true"></span>
-                </div>
-                <div class="form-group">
-                    <label class="form-label" for="ConfirmPassword">تکرار کلمه عبور</label>
-                    <input class="form-control" data-val="true" data-val-equalto="'تکرار کلمه عبور' and 'کلمه عبور' do not match." data-val-equalto-other="*.Password" data-val-required="The تکرار کلمه عبور field is required." id="confirm-password" name="ConfirmPassword" type="password" value="">
-                    <br>
-                    <span class="text-danger field-validation-valid" data-valmsg-for="ConfirmPassword" data-valmsg-replace="true"></span>
-                </div>
-                <div class="form-check">
-                    <input class="form-check-input" data-val="true" data-val-required="The کاربر فوق فعال میباشد field is required." id="is-active" name="IsActive" type="checkbox" value="true">
-                    <label class="form-check-label" for="IsActive">کاربر فوق فعال میباشد</label>
-                </div>
-                <div class="clearfix">&nbsp;</div>
-                <div class="form-group">
-                    <button type="submit" class="btn btn-primary"><i class="fa fa-save"></i> ثبت</button>
-                    &nbsp;&nbsp;
-                    <a href="/AdminPanel/Account/UserList" class="btn btn-warning">
-                        <i class="fa fa-times"></i> انصراف
-                    </a>
-                </div>
-<input name="__RequestVerificationToken" type="hidden" value="CfDJ8KYTGIkQdfxCtALZgV80tFezwf93jCiTtbPkHXoqmdaJAHq5qN2eGJfNA87govo-nbdnvIgsWXI6jr9WQMf4posuGwUrGsCdruBv_iqEJqCm_uPTmiX2-0pyJtXgS3_VlvqMGzN8K2RA-65mZZFlc7fbG3m5X54f_YgOE1mwoM8BOekZEMcilnNicTYQvGyg7Q"><input name="IsActive" type="hidden" value="false"></form>        </div>
+            <div class="card p-4 mt-3">
+                <form action="dealer_create.php" class="card-body" enctype="multipart/form-data" method="post">
+                    <div class="row mb-3">
+                        <div class="col-md-5">
+                            <label class="form-label" for="store_name">نام فروشگاه</label>
+                            <input class="form-control" id="store_name" name="store_name" type="text" value="">
+                        </div>
+                    </div>
+                    <div class="row mb-3">
+                        <div class="col-md-2">
+                            <label class="form-label" for="first_name">نام</label>
+                            <input class="form-control" id="first_name" name="first_name" type="text" value="">
+                        </div>
+                        <div class="col-md-3">
+                            <label class="form-label" for="last_name">نام خانوادگی</label>
+                            <input class="form-control" id="last_name" name="last_name" type="text" value="">
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-4">
+                            <label class="form-label" for="profile_image">تصویر پروفایل</label>
+                            <input type="file" name="profile_image" id="profile_image" class="form-control" accept="image/*">
+                        </div>
+                    </div>
+                    <div class="clearfix">&nbsp;</div>
+                    <div class="row mb-3">
+                        <div class="col-md-4">
+                            <label class="form-label" for="mobile">تلفن همراه</label>
+                            <input class="form-control" id="mobile" name="mobile" type="text" value="">
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label" for="phone">تلفن</label>
+                            <input class="form-control" id="phone" name="phone" type="text" value="">
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label" for="email">ایمیل</label>
+                            <input class="form-control" id="email" name="email" type="text" value="">
+                        </div>
+                    </div>
+                    <div class="row mb-3">
+                        <div class="col-md-12">
+                            <label class="form-label" for="address">آدرس</label>
+                            <input class="form-control" id="address" name="address" type="text" value="">
+                        </div>
+                    </div>
+                    <div class="row mb-3">
+                        <div class="col-md-2">
+                            <div class="form-check">
+                                <input class="form-check-input" id="is_active" name="is_active" type="checkbox" value="1" checked>
+                                <label class="form-check-label" for="is_active">فعال/غیرفعال</label>
+                            </div>
+                        </div>
+                    </div>
+                    <hr>
+                    <div class="row mb-3">
+                        <div class="col-md-4">
+                            <label class="form-label" for="username">نام کاربری</label>
+                            <input class="form-control" id="username" name="username" type="text" value="">
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label" for="password">کلمه عبور</label>
+                            <input class="form-control" id="password" name="password" type="password" value="">
+                        </div>
+                    </div>
+                    <div class="mt-4">
+                        <button type="submit" class="btn btn-primary"><i class="fa fa-save"></i> ثبت</button>
+                        &nbsp;&nbsp;
+                        <a href="dealer_list.php" class="btn btn-warning">
+                            <i class="fa fa-times"></i> انصراف
+                        </a>
+                    </div>
+                </form>
+            </div>
+        </main>
     </div>
-</main>
-
-
-    </div>
-    
-
-    <!-- کانتینر Toast -->
-    <div id="toast-container"></div>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.2/js/bootstrap.bundle.min.js"></script>
-
-</body></html>
+</body>
+</html>
