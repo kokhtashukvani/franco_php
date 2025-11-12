@@ -9,6 +9,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.13.2/jquery-ui.min.js"></script>
 
     <style>
+        /* CSS styles remain the same */
         * {
             margin: 0;
             padding: 0;
@@ -232,119 +233,31 @@
     <div class="wrapper">
         <!-- Sidebar -->
         <div class="sidebar">
-    <h5>مدیریت سایت</h5>
-    <a href="/AdminPanel/Dashboard/Index"><i class="fa fa-home"></i> صفحه اصلی</a>
-    <a href="/AdminPanel/News/List"><i class="fa fa-bullhorn"></i> اخبار</a>
-    <a href="/AdminPanel/Announcement/List"><i class="fa fa-bullhorn"></i> اطلاعیه‌ها</a>
-    <a href="/AdminPanel/Brand/List"><i class="fa fa-bullhorn"></i> برند</a>
-    <a href="/AdminPanel/Product/Groups"><i class="fa fa-box"></i> انبار کالا</a>
-    <a href="/AdminPanel/Agent/List"><i class="fa fa-users"></i> نمایندگی‌ها</a>
-    <a href="/AdminPanel/FrancoShopReports/SalesReport"><i class="fa fa-shopping-cart"></i> گزارش سفارشات</a>
-    <a href="/AdminPanel/Account/UserList"><i class="fa fa-shopping-cart"></i> کاربران سیستم</a>
-    <hr style="border-color: rgba(255,255,255,0.1);">
-    <a href="/Home/Index"><i class="fa fa-sign-in-alt"></i> ورود به سامانه اصلی</a>
-</div>
+            <h5>مدیریت سایت</h5>
+            <a href="/AdminPanel/Dashboard/Index"><i class="fa fa-home"></i> صفحه اصلی</a>
+            <a href="../news/news_list.php"><i class="fa fa-bullhorn"></i> اخبار</a>
+            <a href="../Announcement/announcement_list.php"><i class="fa fa-bullhorn"></i> اطلاعیه‌ها</a>
+            <a href="../brand/brand_list.php"><i class="fa fa-bullhorn"></i> برند</a>
+            <a href="/AdminPanel/Product/Groups"><i class="fa fa-box"></i> انبار کالا</a>
+            <a href="../dealer/dealer_list.php"><i class="fa fa-users"></i> نمایندگی‌ها</a>
+            <a href="reports.php"><i class="fa fa-shopping-cart"></i> گزارش سفارشات</a>
+            <a href="../admins/admin_list.php"><i class="fa fa-shopping-cart"></i> کاربران سیستم</a>
+            <hr style="border-color: rgba(255,255,255,0.1);">
+            <a href="/Home/Index"><i class="fa fa-sign-in-alt"></i> ورود به سامانه اصلی</a>
+        </div>
 
 
         <!-- Main Content -->
-        
-
-<main class="col-md-10 ms-sm-auto content">
-
-    
-<header class="d-flex justify-content-between align-items-center mb-3">
-    <h5>مدیریت برند ها &gt; ثبت برند</h5>
-<form action="/AdminPanel/Account/Logout" area="" method="post">            <button type="submit" class="btn btn-danger">
-                <i class="fa fa-sign-out-alt"></i> خروج
-            </button>
-<input name="__RequestVerificationToken" type="hidden" value="CfDJ8KYTGIkQdfxCtALZgV80tFc8ECpfG9L9prLBnly4N0e_NF2pScZ0J_VXSDIWnLf2sIdBmCoWdNaiC2LsLiLMJ1mokgLxaCah834d0rsgwQyxtMwhrFnaVoeR9nY2dstS3kzQ0NHQgxmPJflTdgponKZFBlftIMSHtUeYFnkexNapB8Igi2Wtq_r3G6ccACAUfQ"></form></header>
-
-
-    <div class="card p-4 mt-3">
-<form action="/AdminPanel/Brand/Create" class="card-body" enctype="multipart/form-data" method="post" novalidate="novalidate">            
-            <div class="row">
-                <div class="col-md-5">
-                    <div class="form-group">
-                        <label class="form-label" for="Title">عنوان</label>
-                        <input class="form-control" data-val="true" data-val-required="عنوان الزامی است" id="duration" name="Title" type="text" value="">
-                        <span class="text-danger field-validation-valid" data-valmsg-for="Title" data-valmsg-replace="true"></span>
-                    </div>
-                    <div class="clearfix">&nbsp;</div>
-                    <div class="form-group">
-                        <label class="form-label" for="LatinTitle">عنوان لاتین</label>
-                        <input class="form-control" data-val="true" data-val-required="عنوان لاتین الزامی است" id="duration" name="LatinTitle" type="text" value="">
-                        <span class="text-danger field-validation-valid" data-valmsg-for="LatinTitle" data-valmsg-replace="true"></span>
-                    </div>
-                    <div class="clearfix">&nbsp;</div>
-                    <div class="form-group">
-                        <div class="col-md-9">
-                            <label class="form-label" for="ThumbImage">تصویر لوگو برند</label>
-
-                            <input type="file" name="ThumbImageFile" id="ThumbImage" class="form-control" accept="image/*">
-                        </div>
-                        <div class="col-md-3">
-                            <!-- نمایش اسم یا پیش‌نمایش تصویر -->
-                            <div id="filePreview" class="mt-2 text-primary fw-bold"></div>
-                            <img id="imagePreview" src="#" alt="Preview" style="max-width: 200px; display: none; margin-top: 10px;">
-                        </div>
-                        <span class="text-danger field-validation-valid" data-valmsg-for="ThumbImage" data-valmsg-replace="true"></span>
-                    </div>
-                    <div class="clearfix">&nbsp;</div>
-                    <div class="form-group form-check">
-                        <input class="form-check-input" data-val="true" data-val-required="The نمایش/عدم نمایش field is required." id="is-show" name="IsShow" type="checkbox" value="true">
-                        <label class="form-label" for="is-show">نمایش/عدم نمایش</label>
-                    </div>
-                    <div class="clearfix">&nbsp;</div>
-                    <div class="form-group">
-                        <button type="submit" class="btn btn-primary"><i class="fa fa-save"></i> ثبت</button>
-                        &nbsp;&nbsp;
-                        <a href="/AdminPanel/Brand/List" class="btn btn-warning">
-                            <i class="fa fa-times"></i> انصراف
-                        </a>
-                    </div>
-                </div>
-            </div>
-<input name="__RequestVerificationToken" type="hidden" value="CfDJ8KYTGIkQdfxCtALZgV80tFc8ECpfG9L9prLBnly4N0e_NF2pScZ0J_VXSDIWnLf2sIdBmCoWdNaiC2LsLiLMJ1mokgLxaCah834d0rsgwQyxtMwhrFnaVoeR9nY2dstS3kzQ0NHQgxmPJflTdgponKZFBlftIMSHtUeYFnkexNapB8Igi2Wtq_r3G6ccACAUfQ"><input name="IsShow" type="hidden" value="false"></form>    </div>
-</main>
-
-
+        <main class="col-md-10 ms-sm-auto content">
+            <header class="d-flex justify-content-between align-items-center mb-3">
+                <h5>گزارشات &gt; گزارش فروش</h5>
+                <a href="#" class="btn btn-danger">
+                    <i class="fa fa-sign-out-alt"></i> خروج
+                </a>
+            </header>
+        </main>
     </div>
-    
-<script src="/lib/jquery-validation/dist/jquery.validate.min.js"></script>
-<script src="/lib/jquery-validation-unobtrusive/dist/jquery.validate.unobtrusive.min.js"></script>
-
-    <script>
-        document.getElementById("ThumbImage").addEventListener("change", function (event) {
-            const file = event.target.files[0];
-            const previewText = document.getElementById("filePreview");
-            const previewImage = document.getElementById("imagePreview");
-
-            if (file) {
-                // نمایش اسم فایل
-                previewText.textContent = "Selected file: " + file.name;
-
-                // اگر فایل عکس بود، پیش‌نمایش نمایش بده
-                if (file.type.startsWith("image/")) {
-                    const reader = new FileReader();
-                    reader.onload = function (e) {
-                        previewImage.src = e.target.result;
-                        previewImage.style.display = "block";
-                    };
-                    reader.readAsDataURL(file);
-                } else {
-                    previewImage.style.display = "none";
-                }
-            } else {
-                previewText.textContent = "";
-                previewImage.style.display = "none";
-            }
-        });
-    </script>
-
-
-    <!-- کانتینر Toast -->
-    <div id="toast-container"></div>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.2/js/bootstrap.bundle.min.js"></script>
-
-</body></html>
+</body>
+</html>

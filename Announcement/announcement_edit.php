@@ -1,3 +1,28 @@
+<?php
+require_once '../db.php';
+
+// Check if ID is provided
+if (!isset($_GET['id'])) {
+    header("Location: announcement_list.php");
+    exit();
+}
+
+$id = $_GET['id'];
+
+// Fetch the announcement from the database
+$stmt = $conn->prepare("SELECT title, description, release_date, is_show FROM announcements WHERE id = ?");
+$stmt->bind_param("i", $id);
+$stmt->execute();
+$result = $stmt->get_result();
+
+if ($result->num_rows === 0) {
+    echo "Announcement not found.";
+    exit();
+}
+
+$announcement = $result->fetch_assoc();
+$stmt->close();
+?>
 <html lang="fa" dir="rtl"><head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -9,6 +34,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.13.2/jquery-ui.min.js"></script>
 
     <style>
+        /* CSS styles remain the same */
         * {
             margin: 0;
             padding: 0;
@@ -232,118 +258,81 @@
     <div class="wrapper">
         <!-- Sidebar -->
         <div class="sidebar">
-    <h5>مدیریت سایت</h5>
-    <a href="/AdminPanel/Dashboard/Index"><i class="fa fa-home"></i> صفحه اصلی</a>
-    <a href="/AdminPanel/News/List"><i class="fa fa-bullhorn"></i> اخبار</a>
-    <a href="/AdminPanel/Announcement/List"><i class="fa fa-bullhorn"></i> اطلاعیه‌ها</a>
-    <a href="/AdminPanel/Brand/List"><i class="fa fa-bullhorn"></i> برند</a>
-    <a href="/AdminPanel/Product/Groups"><i class="fa fa-box"></i> انبار کالا</a>
-    <a href="/AdminPanel/Agent/List"><i class="fa fa-users"></i> نمایندگی‌ها</a>
-    <a href="/AdminPanel/FrancoShopReports/SalesReport"><i class="fa fa-shopping-cart"></i> گزارش سفارشات</a>
-    <a href="/AdminPanel/Account/UserList"><i class="fa fa-shopping-cart"></i> کاربران سیستم</a>
-    <hr style="border-color: rgba(255,255,255,0.1);">
-    <a href="/Home/Index"><i class="fa fa-sign-in-alt"></i> ورود به سامانه اصلی</a>
-</div>
-
+            <h5>مدیریت سایت</h5>
+            <a href="/AdminPanel/Dashboard/Index"><i class="fa fa-home"></i> صفحه اصلی</a>
+            <a href="/AdminPanel/News/List"><i class="fa fa-bullhorn"></i> اخبار</a>
+            <a href="announcement_list.php"><i class="fa fa-bullhorn"></i> اطلاعیه‌ها</a>
+            <a href="/AdminPanel/Brand/List"><i class="fa fa-bullhorn"></i> برند</a>
+            <a href="/AdminPanel/Product/Groups"><i class="fa fa-box"></i> انبار کالا</a>
+            <a href="/AdminPanel/Agent/List"><i class="fa fa-users"></i> نمایندگی‌ها</a>
+            <a href="/AdminPanel/FrancoShopReports/SalesReport"><i class="fa fa-shopping-cart"></i> گزارش سفارشات</a>
+            <a href="/AdminPanel/Account/UserList"><i class="fa fa-shopping-cart"></i> کاربران سیستم</a>
+            <hr style="border-color: rgba(255,255,255,0.1);">
+            <a href="/Home/Index"><i class="fa fa-sign-in-alt"></i> ورود به سامانه اصلی</a>
+        </div>
 
         <!-- Main Content -->
-        
+        <main class="col-md-10 ms-sm-auto content">
+            <header class="d-flex justify-content-between align-items-center mb-3">
+                <h5>مدیریت اطلاعیه‌ها &gt; ویرایش اطلاعیه</h5>
+                <a href="#" class="btn btn-danger">
+                    <i class="fa fa-sign-out-alt"></i> خروج
+                </a>
+            </header>
 
-<main class="col-md-10 ms-sm-auto content">
-    
-<header class="d-flex justify-content-between align-items-center mb-3">
-    <h5>مدیریت برندها -&gt; ویرایش</h5>
-<form action="/AdminPanel/Account/Logout" area="" method="post">            <button type="submit" class="btn btn-danger">
-                <i class="fa fa-sign-out-alt"></i> خروج
-            </button>
-<input name="__RequestVerificationToken" type="hidden" value="CfDJ8KYTGIkQdfxCtALZgV80tFcF47gZc37R6-34LDK0sIdBXociSaBc4dOvzPv_x28xAHALaQxGsWEAR0o62q9u979l42qsU_X6z8_3Rj3Xg7qjO_iSVGBZf2tevk1enuJ8VaMAtY77LvWshzXGMC8cEsdjXL1a7XFHmFJ4bhVWB66YVJzWRDMxjRKb096GdYTemg"></form></header>
-
-
-    <div class="card p-4 mt-3">
-<form action="/AdminPanel/Brand/Edit" class="card-body" enctype="multipart/form-data" method="post" novalidate="novalidate"><input data-val="true" data-val-required="The Id field is required." id="Id" name="Id" type="hidden" value="12b6c173-13fa-499d-5ccc-08ddfb12b5f3"><input data-val="true" data-val-required="The تصویر لوگو برند field is required." id="ThumbImage" name="ThumbImage" type="hidden" value="/Uploads/brands/150aff73-607b-4219-862d-a47ea6dd741e.jpg">            
-            <div class="row">
-                <div class="col-md-5">
-                    <div class="form-group">
-                        <label class="form-label" for="Title">عنوان</label>
-                        <input class="form-control" data-val="true" data-val-required="عنوان الزامی است" id="title" name="Title" type="text" value="فرانکو برچسب مشکی">
-                        <span class="text-danger field-validation-valid" data-valmsg-for="Title" data-valmsg-replace="true"></span>
-                    </div>
-                    <div class="clearfix">&nbsp;</div>
-                    <div class="form-group">
-                        <label class="form-label" for="LatinTitle">عنوان لاتین</label>
-                        <input class="form-control" data-val="true" data-val-required="عنوان لاتین الزامی است" id="title" name="LatinTitle" type="text" value="Black Franco">
-                        <span class="text-danger field-validation-valid" data-valmsg-for="LatinTitle" data-valmsg-replace="true"></span>
-                    </div>
-                    <div class="clearfix">&nbsp;</div>
-                    <div class="form-group">
-                        <div class="col-md-9">
-                            <label class="form-label" for="ThumbImage">تصویر لوگو برند</label>
-
-                            <input type="file" name="ThumbImageFile" id="ThumbImage" class="form-control" accept="image/*">
-                        </div>
+            <div class="card p-4 mt-3">
+                <form action="announcement_update.php" class="card-body" method="post">
+                    <input type="hidden" name="id" value="<?php echo $id; ?>">
+                    <div class="row mb-3">
                         <div class="col-md-3">
-                            <!-- نمایش اسم یا پیش‌نمایش تصویر -->
-                            <div id="filePreview" class="mt-2 text-primary fw-bold"></div>
-                            <img id="imagePreview" src="/Uploads/brands/150aff73-607b-4219-862d-a47ea6dd741e.jpg" alt="Preview" style="max-width:200px; margin-top:10px; ">
+                            <label class="form-label" for="release_date">تاریخ</label>
+                            <div class="input-group">
+                                <input class="form-control pwt-datepicker-input-element" id="announcementDate" name="release_date" type="text" value="<?php echo htmlspecialchars($announcement['release_date']); ?>">
+                                <span class="input-group-text"><i class="fa fa-calendar"></i></span>
+                            </div>
                         </div>
-                        <span class="text-danger field-validation-valid" data-valmsg-for="ThumbImage" data-valmsg-replace="true"></span>
                     </div>
-                    <div class="clearfix">&nbsp;</div>
-                    <div class="form-group form-check">
-                        <input checked="checked" class="form-check-input" data-val="true" data-val-required="The نمایش/عدم نمایش field is required." id="is-show" name="IsShow" type="checkbox" value="true">
-                        <label class="form-label" for="is-show">نمایش/عدم نمایش</label>
+                    <div class="row mb-3">
+                        <div class="col-md-12">
+                            <label class="form-label" for="title">عنوان</label>
+                            <input class="form-control" id="title" name="title" type="text" value="<?php echo htmlspecialchars($announcement['title']); ?>">
+                        </div>
                     </div>
-                    <div class="clearfix">&nbsp;</div>
-                    <div class="form-group">
+                    <div class="row mb-3">
+                        <label class="form-label" for="description">توضیحات</label>
+                        <textarea class="form-control" dir="rtl" id="description" name="description" rows="6" style="width:100% !important;"><?php echo htmlspecialchars($announcement['description']); ?></textarea>
+                    </div>
+                    <div class="row mb-3">
+                        <div class="col-md-12">
+                            <input class="form-check-input" id="is-show" name="is_show" type="checkbox" value="1" <?php echo $announcement['is_show'] ? 'checked' : ''; ?>>
+                            <label class="form-label" for="is-show">نمایش/عدم نمایش</label>
+                        </div>
+                    </div>
+                    <div class="d-flex">
                         <button type="submit" class="btn btn-primary"><i class="fa fa-save"></i> ثبت</button>
                         &nbsp;&nbsp;
-                        <a href="/AdminPanel/Brand/List" class="btn btn-warning">
+                        <a href="announcement_list.php" class="btn btn-warning">
                             <i class="fa fa-times"></i> انصراف
                         </a>
                     </div>
-                </div>
+                </form>
             </div>
-<input name="__RequestVerificationToken" type="hidden" value="CfDJ8KYTGIkQdfxCtALZgV80tFcF47gZc37R6-34LDK0sIdBXociSaBc4dOvzPv_x28xAHALaQxGsWEAR0o62q9u979l42qsU_X6z8_3Rj3Xg7qjO_iSVGBZf2tevk1enuJ8VaMAtY77LvWshzXGMC8cEsdjXL1a7XFHmFJ4bhVWB66YVJzWRDMxjRKb096GdYTemg"><input name="IsShow" type="hidden" value="false"></form>    </div>
-</main>
-
-
+        </main>
     </div>
     
-<script src="/lib/jquery-validation/dist/jquery.validate.min.js"></script>
-<script src="/lib/jquery-validation-unobtrusive/dist/jquery.validate.unobtrusive.min.js"></script>
-
     <script>
-        document.getElementById("ThumbImage").addEventListener("change", function (event) {
-            const file = event.target.files[0];
-            const previewText = document.getElementById("filePreview");
-            const previewImage = document.getElementById("imagePreview");
-
-            if (file) {
-                // نمایش اسم فایل
-                previewText.textContent = "Selected file: " + file.name;
-
-                // اگر فایل عکس بود، پیش‌نمایش نمایش بده
-                if (file.type.startsWith("image/")) {
-                    const reader = new FileReader();
-                    reader.onload = function (e) {
-                        previewImage.src = e.target.result;
-                        previewImage.style.display = "block";
-                    };
-                    reader.readAsDataURL(file);
-                } else {
-                    previewImage.style.display = "none";
-                }
-            } else {
-                previewText.textContent = "";
-                previewImage.style.display = "none";
-            }
+        $(function () {
+            $("#announcementDate").persianDatepicker({
+                format: "YYYY/MM/DD",
+                autoClose: true,
+                calendarType: "persian"
+            });
         });
     </script>
 
-
-    <!-- کانتینر Toast -->
-    <div id="toast-container"></div>
-
     <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.2/js/bootstrap.bundle.min.js"></script>
-
-</body></html>
+</body>
+</html>
+<?php
+$conn->close();
+?>

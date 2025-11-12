@@ -1,3 +1,10 @@
+<?php
+require_once '../db.php';
+
+// Fetch news from the database
+$sql = "SELECT id, title, is_show, display_order FROM news ORDER BY display_order ASC";
+$result = $conn->query($sql);
+?>
 <html lang="fa" dir="rtl"><head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -9,6 +16,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.13.2/jquery-ui.min.js"></script>
 
     <style>
+        /* CSS styles remain the same */
         * {
             margin: 0;
             padding: 0;
@@ -232,85 +240,114 @@
     <div class="wrapper">
         <!-- Sidebar -->
         <div class="sidebar">
-    <h5>مدیریت سایت</h5>
-    <a href="/AdminPanel/Dashboard/Index"><i class="fa fa-home"></i> صفحه اصلی</a>
-    <a href="/AdminPanel/News/List"><i class="fa fa-bullhorn"></i> اخبار</a>
-    <a href="/AdminPanel/Announcement/List"><i class="fa fa-bullhorn"></i> اطلاعیه‌ها</a>
-    <a href="/AdminPanel/Brand/List"><i class="fa fa-bullhorn"></i> برند</a>
-    <a href="/AdminPanel/Product/Groups"><i class="fa fa-box"></i> انبار کالا</a>
-    <a href="/AdminPanel/Agent/List"><i class="fa fa-users"></i> نمایندگی‌ها</a>
-    <a href="/AdminPanel/FrancoShopReports/SalesReport"><i class="fa fa-shopping-cart"></i> گزارش سفارشات</a>
-    <a href="/AdminPanel/Account/UserList"><i class="fa fa-shopping-cart"></i> کاربران سیستم</a>
-    <hr style="border-color: rgba(255,255,255,0.1);">
-    <a href="/Home/Index"><i class="fa fa-sign-in-alt"></i> ورود به سامانه اصلی</a>
-</div>
+            <h5>مدیریت سایت</h5>
+            <a href="/AdminPanel/Dashboard/Index"><i class="fa fa-home"></i> صفحه اصلی</a>
+            <a href="news_list.php"><i class="fa fa-bullhorn"></i> اخبار</a>
+            <a href="../Announcement/announcement_list.php"><i class="fa fa-bullhorn"></i> اطلاعیه‌ها</a>
+            <a href="../brand/brand_list.php"><i class="fa fa-bullhorn"></i> برند</a>
+            <a href="/AdminPanel/Product/Groups"><i class="fa fa-box"></i> انبار کالا</a>
+            <a href="../dealer/dealer_list.php"><i class="fa fa-users"></i> نمایندگی‌ها</a>
+            <a href="../reports/reports.php"><i class="fa fa-shopping-cart"></i> گزارش سفارشات</a>
+            <a href="../admins/admin_list.php"><i class="fa fa-shopping-cart"></i> کاربران سیستم</a>
+            <hr style="border-color: rgba(255,255,255,0.1);">
+            <a href="/Home/Index"><i class="fa fa-sign-in-alt"></i> ورود به سامانه اصلی</a>
+        </div>
 
 
         <!-- Main Content -->
-        
+        <main class="col-md-10 ms-sm-auto content">
+            <header class="d-flex justify-content-between align-items-center mb-3">
+                <h5>مدیریت اخبار</h5>
+                <a href="#" class="btn btn-danger">
+                    <i class="fa fa-sign-out-alt"></i> خروج
+                </a>
+            </header>
 
-<main class="col-md-10 ms-sm-auto content">
-    <header><h5>ویرایش کاربر سیستم</h5></header>
+            <div class="d-flex flex-wrap gap-2 mb-3">
+                <a href="news_add.php" class="btn btn-primary"><i class="fa fa-plus"></i> ایجاد جدید</a>
+                <button class="btn btn-secondary" onclick="location.reload();"><i class="fa fa-sync"></i> بارگذاری مجدد لیست</button>
+                <button id="saveOrderBtn" class="btn btn-success btn-sm"><i class="fa fa-save"></i> ذخیره ترتیب</button>
+            </div>
 
-    <div class="card p-4 mt-3">
-        <div class="col-md-4">
-<form action="/AdminPanel/Account/Update" enctype="multipart/form-data" method="post" novalidate="novalidate"><input data-val="true" data-val-required="The Id field is required." id="Id" name="Id" type="hidden" value="731c2504-1fb1-44f2-3526-08ddff2063da">                
-                <div class="form-group">
-                    <label class="form-label" for="FName">نام</label>
-                    <input class="form-control" data-val="true" data-val-required="The نام field is required." id="FName" name="FName" type="text" value="میثم">
-                    <span class="text-danger field-validation-valid" data-valmsg-for="FName" data-valmsg-replace="true"></span>
-                </div>
-                <div class="clearfix">&nbsp;</div>
-                <div class="form-group">
-                    <label class="form-label" for="LName">نام خانوادگی</label>
-                    <input class="form-control" data-val="true" data-val-required="The نام خانوادگی field is required." id="LName" name="LName" type="text" value="آقااحمدی">
-                    <span class="text-danger field-validation-valid" data-valmsg-for="LName" data-valmsg-replace="true"></span>
-                </div>
-                <div class="clearfix">&nbsp;</div>
-                <div class="form-group">
-                    <label class="form-label" for="UserName">نام کاربری</label>
-                    <input class="form-control" data-val="true" data-val-required="The نام کاربری field is required." id="UserName" name="UserName" type="text" value="Ahmadi">
-                    <span class="text-danger field-validation-valid" data-valmsg-for="UserName" data-valmsg-replace="true"></span>
-                </div>
-                <div class="clearfix">&nbsp;</div>
-                <div class="form-group">
-                    <label class="form-label" for="Email">ایمیل</label>
-                    <input class="form-control" data-val="true" data-val-required="The ایمیل field is required." id="Email" name="Email" type="text" value="m.aghahmadi@gmail.com">
-                    <span class="text-danger field-validation-valid" data-valmsg-for="Email" data-valmsg-replace="true"></span>
-                </div>
-                <div class="clearfix">&nbsp;</div>
-                <div class="form-group">
-                    <label class="form-label" for="PhoneNumber">تلفن</label>
-                    <input class="form-control" data-val="true" data-val-required="The تلفن field is required." id="PhoneNumber" name="PhoneNumber" type="text" value="">
-                    <span class="text-danger field-validation-valid" data-valmsg-for="PhoneNumber" data-valmsg-replace="true"></span>
-                </div>
-                <div class="form-check">
-                    <input checked="checked" class="form-check-input" data-val="true" data-val-required="The کاربر فوق فعال میباشد field is required." id="is-active" name="IsActive" type="checkbox" value="true">
-                    <label class="form-check-label" for="IsActive">کاربر فوق فعال میباشد</label>
-                </div>
-                <div class="clearfix">&nbsp;</div>
-                <div class="form-group">
-                    <button type="submit" class="btn btn-primary"><i class="fa fa-save"></i> ثبت</button>
-                    &nbsp;&nbsp;
-                    <a href="/AdminPanel/Account/UserList" class="btn btn-warning">
-                        <i class="fa fa-times"></i> انصراف
-                    </a>
-                </div>
-<input name="__RequestVerificationToken" type="hidden" value="CfDJ8KYTGIkQdfxCtALZgV80tFc9CDsb8uPEEuJzPKIkdvbxGOoOJGzAJibJ-i9WbL2bUBIniMqrf-p_LkBAncWVVLco3d4-kdM0jFAB0ZyXH6H0GhAmimFJtV77dyFhWUDNL4fqtkp4K1gKFoxn7LyS3xOYOFyzgkEqyHaJALIeS8CTlZ2tf90YhjgR-O7aLJ8OtA"><input name="IsActive" type="hidden" value="false"></form>
-        </div>
+            <div class="table-responsive">
+                <script src="https://cdnjs.cloudflare.com/ajax/libs/Sortable/1.15.2/Sortable.min.js"></script>
+
+                <table id="crudTable" class="table table-bordered table-striped">
+                    <thead class="table-header" style="background:#5986b3 !important">
+                        <tr>
+                            <th style="width:8%">ترتیب نمایش</th>
+                            <th style="text-align:center; vertical-align:middle">عنوان</th>
+                            <th style="text-align:center; vertical-align:middle">نمایش/عدم نمایش</th>
+                            <th style="text-align:center; vertical-align:middle">عملیات</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <?php if ($result->num_rows > 0): ?>
+                            <?php while($row = $result->fetch_assoc()): ?>
+                                <tr data-id="<?php echo $row['id']; ?>">
+                                    <td><i class="fa fa-bars drag-handle"></i> &nbsp;&nbsp; <?php echo $row['display_order']; ?></td>
+                                    <td class="text-center"><?php echo htmlspecialchars($row['title']); ?></td>
+                                    <td class="text-center">
+                                        <?php if ($row['is_show']): ?>
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="green" viewBox="0 0 16 16">
+                                                <path d="M13.485 1.929a1 1 0 0 1 .086 1.414l-7.071 8a1 1 0 0 1-1.497 0l-3.536-4a1 1 0 1 1 1.497-1.328L6 8.586l6.536-7.414a1 1 0 0 1 .949-.243z"></path>
+                                            </svg>
+                                        <?php endif; ?>
+                                    </td>
+                                    <td class="text-center">
+                                        <a class="btn btn-sm btn-primary" href="news_edit.php?id=<?php echo $row['id']; ?>">
+                                            <i class="fa fa-edit"></i>
+                                        </a>
+                                        <a class="btn btn-sm btn-danger" href="news_delete.php?id=<?php echo $row['id']; ?>" onclick="return confirm('آیا از حذف این رکورد مطمئن هستید؟');">
+                                            <i class="fa fa-trash"></i>
+                                        </a>
+                                    </td>
+                                </tr>
+                            <?php endwhile; ?>
+                        <?php else: ?>
+                            <tr>
+                                <td colspan="4" class="text-center">هیچ خبری یافت نشد.</td>
+                            </tr>
+                        <?php endif; ?>
+                    </tbody>
+                </table>
+
+                <script>
+                    // فعال‌سازی Drag & Drop
+                    let sortable = new Sortable(document.querySelector("#crudTable tbody"), {
+                        handle: ".drag-handle",
+                        animation: 150
+                    });
+
+                    // ذخیره ترتیب
+                    $("#saveOrderBtn").on("click", function () {
+                        let order = [];
+                        $("#crudTable tbody tr").each(function (index) {
+                            order.push({ id: $(this).data("id"), order: index + 1 });
+                        });
+
+                        $.ajax({
+                            url: 'news_update_order.php',
+                            type: "POST",
+                            contentType: "application/json",
+                            data: JSON.stringify(order),
+                            success: function (response) {
+                                console.log(response);
+                                window.location.href = 'news_list.php';
+                            },
+                            error: function () {
+                                alert("خطا در ذخیره ترتیب");
+                            }
+                        });
+                    });
+                </script>
+            </div>
+        </main>
     </div>
-</main>
-
-
-    </div>
-    
-<script src="/lib/jquery-validation/dist/jquery.validate.min.js"></script>
-<script src="/lib/jquery-validation-unobtrusive/dist/jquery.validate.unobtrusive.min.js"></script>
-
-
-    <!-- کانتینر Toast -->
-    <div id="toast-container"></div>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.2/js/bootstrap.bundle.min.js"></script>
-
-</body></html>
+</body>
+</html>
+<?php
+$conn->close();
+?>

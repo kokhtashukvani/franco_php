@@ -1,3 +1,28 @@
+<?php
+require_once '../db.php';
+
+// Check if ID is provided
+if (!isset($_GET['id'])) {
+    header("Location: admin_list.php");
+    exit();
+}
+
+$id = $_GET['id'];
+
+// Fetch the admin from the database
+$stmt = $conn->prepare("SELECT first_name, last_name, username, email, phone_number, is_active FROM admins WHERE id = ?");
+$stmt->bind_param("i", $id);
+$stmt->execute();
+$result = $stmt->get_result();
+
+if ($result->num_rows === 0) {
+    echo "Admin not found.";
+    exit();
+}
+
+$admin = $result->fetch_assoc();
+$stmt->close();
+?>
 <html lang="fa" dir="rtl"><head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -9,6 +34,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.13.2/jquery-ui.min.js"></script>
 
     <style>
+        /* CSS styles remain the same */
         * {
             margin: 0;
             padding: 0;
@@ -232,125 +258,72 @@
     <div class="wrapper">
         <!-- Sidebar -->
         <div class="sidebar">
-    <h5>مدیریت سایت</h5>
-    <a href="/AdminPanel/Dashboard/Index"><i class="fa fa-home"></i> صفحه اصلی</a>
-    <a href="/AdminPanel/News/List"><i class="fa fa-bullhorn"></i> اخبار</a>
-    <a href="/AdminPanel/Announcement/List"><i class="fa fa-bullhorn"></i> اطلاعیه‌ها</a>
-    <a href="/AdminPanel/Brand/List"><i class="fa fa-bullhorn"></i> برند</a>
-    <a href="/AdminPanel/Product/Groups"><i class="fa fa-box"></i> انبار کالا</a>
-    <a href="/AdminPanel/Agent/List"><i class="fa fa-users"></i> نمایندگی‌ها</a>
-    <a href="/AdminPanel/FrancoShopReports/SalesReport"><i class="fa fa-shopping-cart"></i> گزارش سفارشات</a>
-    <a href="/AdminPanel/Account/UserList"><i class="fa fa-shopping-cart"></i> کاربران سیستم</a>
-    <hr style="border-color: rgba(255,255,255,0.1);">
-    <a href="/Home/Index"><i class="fa fa-sign-in-alt"></i> ورود به سامانه اصلی</a>
-</div>
-
+            <h5>مدیریت سایت</h5>
+            <a href="/AdminPanel/Dashboard/Index"><i class="fa fa-home"></i> صفحه اصلی</a>
+            <a href="../news/news_list.php"><i class="fa fa-bullhorn"></i> اخبار</a>
+            <a href="../Announcement/announcement_list.php"><i class="fa fa-bullhorn"></i> اطلاعیه‌ها</a>
+            <a href="../brand/brand_list.php"><i class="fa fa-bullhorn"></i> برند</a>
+            <a href="/AdminPanel/Product/Groups"><i class="fa fa-box"></i> انبار کالا</a>
+            <a href="../dealer/dealer_list.php"><i class="fa fa-users"></i> نمایندگی‌ها</a>
+            <a href="../reports/reports.php"><i class="fa fa-shopping-cart"></i> گزارش سفارشات</a>
+            <a href="admin_list.php"><i class="fa fa-shopping-cart"></i> کاربران سیستم</a>
+            <hr style="border-color: rgba(255,255,255,0.1);">
+            <a href="/Home/Index"><i class="fa fa-sign-in-alt"></i> ورود به سامانه اصلی</a>
+        </div>
 
         <!-- Main Content -->
-        
+        <main class="col-md-10 ms-sm-auto content">
+            <header><h5>ویرایش کاربر سیستم</h5></header>
 
-<main class="col-md-10 ms-sm-auto content">
-
-    
-<header class="d-flex justify-content-between align-items-center mb-3">
-    <h5>گزارشات &gt; گزارش فروش</h5>
-<form action="/AdminPanel/Account/Logout" area="" method="post">            <button type="submit" class="btn btn-danger">
-                <i class="fa fa-sign-out-alt"></i> خروج
-            </button>
-<input name="__RequestVerificationToken" type="hidden" value="CfDJ8KYTGIkQdfxCtALZgV80tFdPEA7dZHIFwUlREpaVuFk6GdSKBPn63w-L1cWjWaHxHRdpGDKimnguebk-I_DlD2_CGLT4PjrzOg5QuNbH_x2Q3OJUghQEmlEg0zk-3-5oSs-vWDB76l41orsRmjkLFkB_NMRhJZ79dyZ2ZyeZTkBTVSi4DfHEJ5aucN9j5inJQg"></form></header>
-
-
-    <div class="card p-4 mt-3">
-
-        <div class="card p-4 mt-3">
-<form action="/AdminPanel/FrancoShopReports/SalesReport" class="card-body" enctype="multipart/form-data" method="post">                
-                <div class="row mb-3">
-                    <div class="col-md-3">
-                        <label class="form-label" for="FromDate">از تاریخ</label>
-                        <div class="input-group">
-                            <input class="form-control" data-val="true" data-val-required="The از تاریخ field is required." id="from-date" name="FromDate" type="text" value="1/1/0001 12:00:00 AM">
-                            <span class="input-group-text"><i class="fa fa-calendar"></i></span>
+            <div class="card p-4 mt-3">
+                <div class="col-md-4">
+                    <form action="admin_update.php" method="post">
+                        <input type="hidden" name="id" value="<?php echo $id; ?>">
+                        <div class="form-group">
+                            <label class="form-label" for="first_name">نام</label>
+                            <input class="form-control" id="first_name" name="first_name" type="text" value="<?php echo htmlspecialchars($admin['first_name']); ?>">
                         </div>
-                    </div>
-                    <div class="col-md-3">
-                        <label class="form-label" for="ToDate">تا تاریخ</label>
-                        <div class="input-group">
-                            <input class="form-control" data-val="true" data-val-required="The تا تاریخ field is required." id="to-date" name="ToDate" type="text" value="1/1/0001 12:00:00 AM">
-                            <span class="input-group-text"><i class="fa fa-calendar"></i></span>
+                        <div class="clearfix">&nbsp;</div>
+                        <div class="form-group">
+                            <label class="form-label" for="last_name">نام خانوادگی</label>
+                            <input class="form-control" id="last_name" name="last_name" type="text" value="<?php echo htmlspecialchars($admin['last_name']); ?>">
                         </div>
-                    </div>
+                        <div class="clearfix">&nbsp;</div>
+                        <div class="form-group">
+                            <label class="form-label" for="username">نام کاربری</label>
+                            <input class="form-control" id="username" name="username" type="text" value="<?php echo htmlspecialchars($admin['username']); ?>">
+                        </div>
+                        <div class="clearfix">&nbsp;</div>
+                        <div class="form-group">
+                            <label class="form-label" for="email">ایمیل</label>
+                            <input class="form-control" id="email" name="email" type="text" value="<?php echo htmlspecialchars($admin['email']); ?>">
+                        </div>
+                        <div class="clearfix">&nbsp;</div>
+                        <div class="form-group">
+                            <label class="form-label" for="phone_number">تلفن</label>
+                            <input class="form-control" id="phone_number" name="phone_number" type="text" value="<?php echo htmlspecialchars($admin['phone_number']); ?>">
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input" id="is_active" name="is_active" type="checkbox" value="1" <?php echo $admin['is_active'] ? 'checked' : ''; ?>>
+                            <label class="form-check-label" for="is_active">کاربر فوق فعال میباشد</label>
+                        </div>
+                        <div class="clearfix">&nbsp;</div>
+                        <div class="form-group">
+                            <button type="submit" class="btn btn-primary"><i class="fa fa-save"></i> ثبت</button>
+                            &nbsp;&nbsp;
+                            <a href="admin_list.php" class="btn btn-warning">
+                                <i class="fa fa-times"></i> انصراف
+                            </a>
+                        </div>
+                    </form>
                 </div>
-                <div>&nbsp;</div>
-                <div class="row">
-                    <div class="col-md-3">
-                        <label class="form-label" for="brandId">برند محصول</label>
-                        <select class="form-control" data-val="true" data-val-required="The برند محصول field is required." id="brandId" name="brandId"><option value="">-- یک برند انتخاب کنید --</option>
-<option value="36b98106-2f64-4669-0d70-08de05736111">یلکن</option>
-<option value="12b6c173-13fa-499d-5ccc-08ddfb12b5f3">فرانکو برچسب مشکی</option>
-<option value="f5dca877-7b54-492b-5ccb-08ddfb12b5f3">فرانکو برچسب زرد</option>
-</select>
-                        <span class="field-validation-valid" data-valmsg-for="brandId" data-valmsg-replace="true"></span>
-                    </div>
-                    <div class="col-md-2">
-                        <label class="form-label" for="ProductCode">کد محصول</label>
-                        <input class="form-control" data-val="true" data-val-required="The کد محصول field is required." id="ProductCode" name="ProductCode" type="text" value="">
-                        <span class="text-danger field-validation-valid" data-valmsg-for="ProductCode" data-valmsg-replace="true"></span>
-                    </div>
-                    <div class="col-md-7">
-                        <label class="form-label" for="ProductTitle">عنوان محصول</label>
-                        <input class="form-control" data-val="true" data-val-required="The عنوان محصول field is required." id="ProductTitle" name="ProductTitle" type="text" value="">
-                        <span class="text-danger field-validation-valid" data-valmsg-for="ProductTitle" data-valmsg-replace="true"></span>
-                    </div>
-                </div>
-                <div>&nbsp;</div>
-                <div class="d-flex">
-                    <button type="submit" class="btn btn-primary"><i class="fa fa-save"></i> جستجو</button>
-                    &nbsp;&nbsp;
-                    <a href="/AdminPanel/Announcement/List" class="btn btn-warning">
-                        <i class="fa fa-times"></i> انصراف
-                    </a>
-                </div>
-<input name="__RequestVerificationToken" type="hidden" value="CfDJ8KYTGIkQdfxCtALZgV80tFdPEA7dZHIFwUlREpaVuFk6GdSKBPn63w-L1cWjWaHxHRdpGDKimnguebk-I_DlD2_CGLT4PjrzOg5QuNbH_x2Q3OJUghQEmlEg0zk-3-5oSs-vWDB76l41orsRmjkLFkB_NMRhJZ79dyZ2ZyeZTkBTVSi4DfHEJ5aucN9j5inJQg"></form>
-
-        </div>
-
-        <div class="card p-4 mt-3">
-            <table class="table table-striped">
-                <tbody>
-                    <tr>
-                        <td style="width:10%;">تاریخ</td>
-                        <td style="width:10%;">برند محصول</td>
-                        <th style="width:15%;">کد محصول</th>
-                        <th style="width:15%;">نام محصول</th>
-                        <th style="width:10%;">تعداد فروخته شده به کارتن</th>
-                        <th style="width:10%;">تعداد فروخته شده به عدد</th>
-                        <th style="width:15%;">جمع اقلام فروخته شده</th>
-                    </tr>
-                    <!-- ngRepeat: order in FilteredOrderList -->
-                </tbody>
-            </table>
-        </div>
-    </div>
-</main>
-
-
+            </div>
+        </main>
     </div>
     
-                <script>
-                    $(function () {
-                        $("#announcementDate").persianDatepicker({
-                            format: "YYYY/MM/DD",
-                            autoClose: true,
-                            calendarType: "persian",
-                            initialValue: false
-                        });
-                    });
-                </script>
-            
-
-    <!-- کانتینر Toast -->
-    <div id="toast-container"></div>
-
     <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.2/js/bootstrap.bundle.min.js"></script>
-
-</body></html>
+</body>
+</html>
+<?php
+$conn->close();
+?>

@@ -1,0 +1,30 @@
+<?php
+require_once '../db.php';
+
+if ($_SERVER["REQUEST_METHOD"] == "POST") {
+    $title = $_POST['title'];
+    $description = $_POST['description'];
+    $release_date = $_POST['release_date'];
+    $is_show = isset($_POST['is_show']) ? 1 : 0;
+
+    // Get the highest display_order and add 1
+    $sql_order = "SELECT MAX(display_order) AS max_order FROM announcements";
+    $result_order = $conn->query($sql_order);
+    $row_order = $result_order->fetch_assoc();
+    $display_order = $row_order['max_order'] + 1;
+
+    $stmt = $conn->prepare("INSERT INTO announcements (title, description, release_date, is_show, display_order) VALUES (?, ?, ?, ?, ?)");
+    $stmt->bind_param("sssis", $title, $description, $release_date, $is_show, $display_order);
+
+    if ($stmt->execute()) {
+        header("Location: announcement_list.php");
+        exit();
+    } else {
+        echo "Error: " . $stmt->error;
+    }
+
+    $stmt->close();
+}
+
+$conn->close();
+?>

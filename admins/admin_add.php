@@ -9,6 +9,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.13.2/jquery-ui.min.js"></script>
 
     <style>
+        /* CSS styles remain the same */
         * {
             margin: 0;
             padding: 0;
@@ -232,58 +233,70 @@
     <div class="wrapper">
         <!-- Sidebar -->
         <div class="sidebar">
-    <h5>مدیریت سایت</h5>
-    <a href="/AdminPanel/Dashboard/Index"><i class="fa fa-home"></i> صفحه اصلی</a>
-    <a href="/AdminPanel/News/List"><i class="fa fa-bullhorn"></i> اخبار</a>
-    <a href="/AdminPanel/Announcement/List"><i class="fa fa-bullhorn"></i> اطلاعیه‌ها</a>
-    <a href="/AdminPanel/Brand/List"><i class="fa fa-bullhorn"></i> برند</a>
-    <a href="/AdminPanel/Product/Groups"><i class="fa fa-box"></i> انبار کالا</a>
-    <a href="/AdminPanel/Agent/List"><i class="fa fa-users"></i> نمایندگی‌ها</a>
-    <a href="/AdminPanel/FrancoShopReports/SalesReport"><i class="fa fa-shopping-cart"></i> گزارش سفارشات</a>
-    <a href="/AdminPanel/Account/UserList"><i class="fa fa-shopping-cart"></i> کاربران سیستم</a>
-    <hr style="border-color: rgba(255,255,255,0.1);">
-    <a href="/Home/Index"><i class="fa fa-sign-in-alt"></i> ورود به سامانه اصلی</a>
-</div>
+            <h5>مدیریت سایت</h5>
+            <a href="/AdminPanel/Dashboard/Index"><i class="fa fa-home"></i> صفحه اصلی</a>
+            <a href="../news/news_list.php"><i class="fa fa-bullhorn"></i> اخبار</a>
+            <a href="../Announcement/announcement_list.php"><i class="fa fa-bullhorn"></i> اطلاعیه‌ها</a>
+            <a href="../brand/brand_list.php"><i class="fa fa-bullhorn"></i> برند</a>
+            <a href="/AdminPanel/Product/Groups"><i class="fa fa-box"></i> انبار کالا</a>
+            <a href="../dealer/dealer_list.php"><i class="fa fa-users"></i> نمایندگی‌ها</a>
+            <a href="../reports/reports.php"><i class="fa fa-shopping-cart"></i> گزارش سفارشات</a>
+            <a href="admin_list.php"><i class="fa fa-shopping-cart"></i> کاربران سیستم</a>
+            <hr style="border-color: rgba(255,255,255,0.1);">
+            <a href="/Home/Index"><i class="fa fa-sign-in-alt"></i> ورود به سامانه اصلی</a>
+        </div>
 
 
         <!-- Main Content -->
-        
-<main class="col-md-10 ms-sm-auto content">
-    
-<header class="d-flex justify-content-between align-items-center mb-3">
-    <h5>مدیریت اخبار &gt; ویرایش خبر</h5>
-<form action="/AdminPanel/Account/Logout" area="" method="post">            <button type="submit" class="btn btn-danger">
-                <i class="fa fa-sign-out-alt"></i> خروج
-            </button>
-<input name="__RequestVerificationToken" type="hidden" value="CfDJ8KYTGIkQdfxCtALZgV80tFdNG5eChZlFeWpZtk4HssXUczmV_7PhdtpXIgdcQrNaE8bLCxdJCT9VgOYQw5m5x7rNt9lP4BWVVQ4SgEZl-iac36bG5rotttoaskGDkBknBtfCd9pYLyTXmXs8hntYI4ZITVggYQffPLCMzPK63_HMrpu17wmvR-3g4NsZUzXoVw"></form></header>
-
-
-    <div class="card p-4 mt-3">
-<form action="/AdminPanel/News/Update" enctype="multipart/form-data" method="post"><input data-val="true" data-val-required="The Id field is required." id="Id" name="Id" type="hidden" value="e1c20153-2899-4546-9fc9-1b4839e0baf6">            
-            <div class="mb-3">
-                <label class="form-label" for="Title">عنوان</label>
-                <input class="form-control" data-val="true" data-val-required="عنوان الزامی است" id="Title" name="Title" type="text" value="اتوماتیک استارت">
-                <span class="text-danger field-validation-valid" data-valmsg-for="Title" data-valmsg-replace="true"></span>
+        <main class="col-md-10 ms-sm-auto content">
+            <header>
+                <h5>ثبت کاربران سیستم</h5>
+            </header>
+            <div class="card p-4 mt-3">
+                <div class="col-md-4">
+                    <form action="admin_create.php" class="card-body" method="post">
+                        <div class="form-group">
+                            <label class="form-label" for="first_name">نام</label>
+                            <input class="form-control" id="first_name" name="first_name" type="text" value="">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label" for="last_name">نام خانوادگی</label>
+                            <input class="form-control" id="last_name" name="last_name" type="text" value="">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label" for="username">نام کاربری</label>
+                            <input class="form-control" id="username" name="username" type="text" value="">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label" for="email">ایمیل</label>
+                            <input class="form-control" id="email" name="email" type="text" value="">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label" for="password">کلمه عبور</label>
+                            <input class="form-control" id="password" name="password" type="password" value="">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label" for="phone_number">تلفن</label>
+                            <input class="form-control" id="phone_number" name="phone_number" type="text" value="">
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input" id="is_active" name="is_active" type="checkbox" value="1" checked>
+                            <label class="form-check-label" for="is_active">کاربر فوق فعال میباشد</label>
+                        </div>
+                        <div class="clearfix">&nbsp;</div>
+                        <div class="form-group">
+                            <button type="submit" class="btn btn-primary"><i class="fa fa-save"></i> ثبت</button>
+                            &nbsp;&nbsp;
+                            <a href="admin_list.php" class="btn btn-warning">
+                                <i class="fa fa-times"></i> انصراف
+                            </a>
+                        </div>
+                    </form>
+                </div>
             </div>
-            <div class="mb-3">
-                <label class="form-label" for="Description">شرح</label>
-                <textarea class="form-control" cols="50" data-val="true" data-val-required="The شرح field is required." id="Description" name="Description" rows="6">اتوماتیک استارت های فرانکو ،به زودی آماده ثبت سفارش می باشد .</textarea>
-                <span class="text-danger field-validation-valid" data-valmsg-for="Description" data-valmsg-replace="true"></span>
-            </div>
-            <div class="mb-3 form-check">
-                <input checked="checked" class="form-check-input" data-val="true" data-val-required="The نمایش/عدم نمایش field is required." id="is-show" name="IsShow" type="checkbox" value="true">
-                <label class="form-check-label" for="is-show">نمایش/عدم نمایش</label>
-            </div>
-            <button type="submit" class="btn btn-primary"><i class="fa fa-save"></i> ثبت</button>
-            <a href="/AdminPanel/News/List" class="btn btn-warning"><i class="fa fa-times"></i> انصراف</a>
-<input name="__RequestVerificationToken" type="hidden" value="CfDJ8KYTGIkQdfxCtALZgV80tFdNG5eChZlFeWpZtk4HssXUczmV_7PhdtpXIgdcQrNaE8bLCxdJCT9VgOYQw5m5x7rNt9lP4BWVVQ4SgEZl-iac36bG5rotttoaskGDkBknBtfCd9pYLyTXmXs8hntYI4ZITVggYQffPLCMzPK63_HMrpu17wmvR-3g4NsZUzXoVw"><input name="IsShow" type="hidden" value="false"></form>    </div>
-</main>
+        </main>
     </div>
-    
-
-    <!-- کانتینر Toast -->
-    <div id="toast-container"></div>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.2/js/bootstrap.bundle.min.js"></script>
-
-</body></html>
+</body>
+</html>
