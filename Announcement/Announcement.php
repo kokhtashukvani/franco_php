@@ -1,3 +1,29 @@
+<?php
+include 'db.php';
+
+if (isset($_GET['delete_id'])) {
+    $id = $_GET['delete_id'];
+    $stmt = $conn->prepare("DELETE FROM announcements WHERE id = ?");
+    $stmt->bind_param("i", $id);
+    $stmt->execute();
+    $stmt->close();
+    header("Location: Announcement.php");
+    exit;
+}
+
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    $order = json_decode(file_get_contents("php://input"));
+    $stmt = $conn->prepare("UPDATE announcements SET display_order = ? WHERE id = ?");
+    foreach ($order as $item) {
+        $id = $item->id;
+        $display_order = $item->order;
+        $stmt->bind_param("ii", $display_order, $id);
+        $stmt->execute();
+    }
+    $stmt->close();
+    exit;
+}
+?>
 <html lang="fa" dir="rtl"><head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -326,54 +352,29 @@
         </tr>
     </thead>
     <tbody>
-            <tr data-id="c3c4e9c2-0401-45cc-958e-1facb611bf78">
-                    <td><i class="fa fa-bars drag-handle"></i> &nbsp;&nbsp; 1</td>
-                        <td class="text-center">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="green" viewBox="0 0 16 16">
-                                        <path d="M13.485 1.929a1 1 0 0 1 .086 1.414l-7.071 8a1 1 0 0 1-1.497 0l-3.536-4a1 1 0 1 1 1.497-1.328L6 8.586l6.536-7.414a1 1 0 0 1 .949-.243z"></path>
-                                    </svg>
-                        </td>
-                        <td class="text-center">
-در حال تامین                        </td>
-                        <td class="text-center">
-1404/07/16                        </td>
-
-                <td class="text-center">
-                    <a class="btn btn-sm btn-primary" href="/AdminPanel/Announcement/EditAnnouncement/c3c4e9c2-0401-45cc-958e-1facb611bf78">
-                        <i class="fa fa-edit"></i>
-                    </a>
-
-                    <a class="btn btn-sm btn-danger" href="/AdminPanel/Announcement/Delete/c3c4e9c2-0401-45cc-958e-1facb611bf78" onclick="return confirm('آیا از حذف این رکورد مطمئن هستید؟');">
-                        <i class="fa fa-trash"></i>
-                    </a>
-
-
-                </td>
-            </tr>
-            <tr data-id="28025b64-68fb-4da1-a718-1dd5d444599f">
-                    <td><i class="fa fa-bars drag-handle"></i> &nbsp;&nbsp; 2</td>
-                        <td class="text-center">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="green" viewBox="0 0 16 16">
-                                        <path d="M13.485 1.929a1 1 0 0 1 .086 1.414l-7.071 8a1 1 0 0 1-1.497 0l-3.536-4a1 1 0 1 1 1.497-1.328L6 8.586l6.536-7.414a1 1 0 0 1 .949-.243z"></path>
-                                    </svg>
-                        </td>
-                        <td class="text-center">
-در حال تامین                        </td>
-                        <td class="text-center">
-1404/07/16                        </td>
-
-                <td class="text-center">
-                    <a class="btn btn-sm btn-primary" href="/AdminPanel/Announcement/EditAnnouncement/28025b64-68fb-4da1-a718-1dd5d444599f">
-                        <i class="fa fa-edit"></i>
-                    </a>
-
-                    <a class="btn btn-sm btn-danger" href="/AdminPanel/Announcement/Delete/28025b64-68fb-4da1-a718-1dd5d444599f" onclick="return confirm('آیا از حذف این رکورد مطمئن هستید؟');">
-                        <i class="fa fa-trash"></i>
-                    </a>
-
-
-                </td>
-            </tr>
+        <?php
+        include 'db.php';
+        $sql = "SELECT * FROM announcements ORDER BY display_order ASC";
+        $result = $conn->query($sql);
+        if ($result->num_rows > 0) {
+            while($row = $result->fetch_assoc()) {
+                echo "<tr data-id='" . $row["id"] . "'>";
+                echo "<td><i class='fa fa-bars drag-handle'></i> &nbsp;&nbsp; " . $row["display_order"] . "</td>";
+                echo "<td class='text-center'>";
+                if ($row["is_show"]) {
+                    echo "<svg xmlns='http://www.w3.org/2000/svg' width='16' height='16' fill='green' viewBox='0 0 16 16'><path d='M13.485 1.929a1 1 0 0 1 .086 1.414l-7.071 8a1 1 0 0 1-1.497 0l-3.536-4a1 1 0 1 1 1.497-1.328L6 8.586l6.536-7.414a1 1 0 0 1 .949-.243z'></path></svg>";
+                }
+                echo "</td>";
+                echo "<td class='text-center'>" . $row["title"] . "</td>";
+                echo "<td class='text-center'>" . $row["release_date"] . "</td>";
+                echo "<td class='text-center'>";
+                echo "<a class='btn btn-sm btn-primary' href='Announcement_edit.php?id=" . $row["id"] . "'><i class='fa fa-edit'></i></a>";
+                echo "<a class='btn btn-sm btn-danger' href='Announcement.php?delete_id=" . $row["id"] . "' onclick='return confirm(\"آیا از حذف این رکورد مطمئن هستید؟\");'><i class='fa fa-trash'></i></a>";
+                echo "</td>";
+                echo "</tr>";
+            }
+        }
+        ?>
     </tbody>
 </table>
 
@@ -395,11 +396,8 @@
             order.push({ id: $(this).data("id"), order: index + 1 });
         });
 
-        // آدرس جنریک بر اساس کنترلر و area
-        let url = "/" + (areaName ? areaName + "/" : "") + controllerName + "/UpdateOrder";
-
         $.ajax({
-            url: url,
+            url: 'Announcement.php',
             type: "POST",
             contentType: "application/json",
             data: JSON.stringify(order),

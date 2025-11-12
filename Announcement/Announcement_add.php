@@ -1,3 +1,24 @@
+<?php
+include 'db.php';
+
+if ($_SERVER["REQUEST_METHOD"] == "POST") {
+    $release_date = $_POST['ReleaseDateShamsi'];
+    $title = $_POST['Title'];
+    $description = $_POST['Description'];
+    $is_show = isset($_POST['IsShow']) ? 1 : 0;
+
+    $stmt = $conn->prepare("INSERT INTO announcements (release_date, title, description, is_show, display_order) VALUES (?, ?, ?, ?, 0)");
+    $stmt->bind_param("sssi", $release_date, $title, $description, $is_show);
+
+    if ($stmt->execute()) {
+        header("Location: Announcement.php");
+        exit;
+    } else {
+        echo "Error: " . $stmt->error;
+    }
+    $stmt->close();
+}
+?>
 <html lang="fa" dir="rtl"><head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -261,7 +282,7 @@
 
 
     <div class="card p-4 mt-3">
-<form action="/AdminPanel/Announcement/Create" class="card-body" enctype="multipart/form-data" method="post"><input name="__RequestVerificationToken" type="hidden" value="CfDJ8KYTGIkQdfxCtALZgV80tFcqHyaE6SngrV-MIF-d9wY4ujKZtZYT6fzQXtmxro1IwmG1hxInZQaqptG2BGW9Sqi_k04H3iaItFTPfbSJTSJJ5YfgdyYRFFC6ApjUbcRoQynWx1saGn5oALJfQyCGZC6aa9drpLcG8NAhHX7zaGpvMFnxYb7ABcpcFnufKeyMhA">            
+<form action="Announcement_add.php" class="card-body" enctype="multipart/form-data" method="post">
             <div class="row mb-3">
                 <div class="col-md-3">
                     <label class="form-label" for="ReleaseDateShamsi">تاریخ</label>

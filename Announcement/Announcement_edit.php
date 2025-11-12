@@ -1,3 +1,34 @@
+<?php
+include 'db.php';
+
+$id = $_GET['id'];
+
+if ($_SERVER["REQUEST_METHOD"] == "POST") {
+    $id = $_POST['Id'];
+    $release_date = $_POST['ReleaseDateShamsi'];
+    $title = $_POST['Title'];
+    $description = $_POST['Description'];
+    $is_show = isset($_POST['IsShow']) ? 1 : 0;
+
+    $stmt = $conn->prepare("UPDATE announcements SET release_date = ?, title = ?, description = ?, is_show = ? WHERE id = ?");
+    $stmt->bind_param("sssii", $release_date, $title, $description, $is_show, $id);
+
+    if ($stmt->execute()) {
+        header("Location: Announcement.php");
+        exit;
+    } else {
+        echo "Error: " . $stmt->error;
+    }
+    $stmt->close();
+} else {
+    $stmt = $conn->prepare("SELECT * FROM announcements WHERE id = ?");
+    $stmt->bind_param("i", $id);
+    $stmt->execute();
+    $result = $stmt->get_result();
+    $row = $result->fetch_assoc();
+    $stmt->close();
+}
+?>
 <html lang="fa" dir="rtl"><head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -262,41 +293,33 @@
 
 
     <div class="card p-4 mt-3">
-<form action="/AdminPanel/Announcement/Update" class="card-body" enctype="multipart/form-data" method="post"><input data-val="true" data-val-required="The Id field is required." id="Id" name="Id" type="hidden" value="c3c4e9c2-0401-45cc-958e-1facb611bf78">            
-            <div class="row mb-3">
-                <div class="col-md-3">
-                    <label class="form-label" for="ReleaseDateShamsi">تاریخ</label>
-                    <div class="input-group">
-                        <input class="form-control pwt-datepicker-input-element" data-val="true" data-val-required="The تاریخ field is required." id="announcementDate" name="ReleaseDateShamsi" type="text" value="1404/07/16">
-                        <span class="input-group-text"><i class="fa fa-calendar"></i></span>
-                    </div>
-                    <br>
-                    <span class="text-danger field-validation-valid" data-valmsg-for="ReleaseDateShamsi" data-valmsg-replace="true"></span>
-                </div>
-
+<form action="Announcement_edit.php?id=<?php echo $id; ?>" class="card-body" enctype="multipart/form-data" method="post">
+    <input type="hidden" name="Id" value="<?php echo $id; ?>">
+    <div class="row mb-3">
+        <div class="col-md-3">
+            <label class="form-label" for="ReleaseDateShamsi">تاریخ</label>
+            <div class="input-group">
+                <input class="form-control pwt-datepicker-input-element" id="announcementDate" name="ReleaseDateShamsi" type="text" value="<?php echo $row['release_date']; ?>">
+                <span class="input-group-text"><i class="fa fa-calendar"></i></span>
             </div>
-            <div class="row mb-3">
-                <div class="col-md-12">
-                    <label class="form-label" for="Title">عنوان</label>
-                    <input class="form-control" data-val="true" data-val-required="وارد کردن عنوان الزامی است" id="title" name="Title" type="text" value="در حال تامین">
-                    <br>
-                    <span class="text-danger field-validation-valid" data-valmsg-for="Title" data-valmsg-replace="true"></span>
-                </div>
-            </div>
-            <div class="row mb-3">
-                <label class="form-label" for="Description">توضیحات</label>
-                <textarea class="form-control" data-val="true" data-val-required="The توضیحات field is required." dir="rtl" id="decsription" name="Description" rows="6" style="width:100% !important;">اتوماتیک استارت ,
-توپی چرخ ,
-میل توپی ,
-لنت ,
-شمع ,</textarea>
-            </div>
-            <div class="row mb-3">
-                <div class="col-md-12">
-                    <input checked="checked" class="form-check-input" data-val="true" data-val-required="The نمایش field is required." id="is-show" name="IsShow" type="checkbox" value="true">
-                    <label class="form-label" for="is-show">نمایش/عدم نمایش</label>
-                </div>
-            </div>
+        </div>
+    </div>
+    <div class="row mb-3">
+        <div class="col-md-12">
+            <label class="form-label" for="Title">عنوان</label>
+            <input class="form-control" id="title" name="Title" type="text" value="<?php echo $row['title']; ?>">
+        </div>
+    </div>
+    <div class="row mb-3">
+        <label class="form-label" for="Description">توضیحات</label>
+        <textarea class="form-control" id="decsription" name="Description" rows="6" style="width:100% !important;"><?php echo $row['description']; ?></textarea>
+    </div>
+    <div class="row mb-3">
+        <div class="col-md-12">
+            <input class="form-check-input" id="is-show" name="IsShow" type="checkbox" value="true" <?php if($row['is_show']) echo 'checked'; ?>>
+            <label class="form-label" for="is-show">نمایش/عدم نمایش</label>
+        </div>
+    </div>
             <div class="d-flex">
                 <button type="submit" class="btn btn-primary"><i class="fa fa-save"></i> ثبت</button>
                 &nbsp;&nbsp;
